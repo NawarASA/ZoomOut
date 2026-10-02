@@ -1,0 +1,6 @@
+{
+  "headers": [
+    { "source": "/puzzles.json", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+    { "source": "/photos/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] }
+  ]
+}

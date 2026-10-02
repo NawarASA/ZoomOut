@@ -1,0 +1,5 @@
+/puzzles.json
+  Cache-Control: no-cache
+
+/photos/*
+  Cache-Control: public, max-age=86400

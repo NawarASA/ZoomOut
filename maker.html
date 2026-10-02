@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zoom Out · Puzzle maker</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <section class="maker">
+    <a class="back" href="./">← Back to the game</a>
+    <h2>Make a puzzle</h2>
+    <p class="note" id="schedule">Loading the puzzle list…</p>
+
+    <div class="drop" id="drop">
+      <label for="mk-file" style="cursor:pointer"><b>Choose a photo</b> or drop it here</label>
+      <input id="mk-file" type="file" accept="image/*" style="display:block;margin:12px auto 0;max-width:100%">
+    </div>
+
+    <div id="mk-editor" hidden style="display:grid;gap:18px">
+      <div class="mk-stage" id="mk-stage">
+        <img id="mk-img" alt="Your photo, cropped to a square">
+        <div class="mk-dot" id="mk-dot"></div>
+      </div>
+      <p class="note">Tap the photo to move the starting point. Pick a detail that's strange up close but recognisable by about 2.4×.</p>
+      <div class="strip" id="mk-strip"></div>
+
+      <div class="field">
+        <label for="mk-answers">Accepted answers</label>
+        <input type="text" id="mk-answers" placeholder="tennis ball, ball">
+        <small>Comma-separated. The first one is shown as the answer. Small typos are accepted automatically.</small>
+      </div>
+      <div class="field">
+        <label for="mk-near">Close guesses</label>
+        <input type="text" id="mk-near" placeholder="golf ball, lemon, racket">
+        <small>These get an amber "Close" instead of red.</small>
+      </div>
+      <div class="field">
+        <label for="mk-credit">Photo credit (optional)</label>
+        <input type="text" id="mk-credit" placeholder="@yourname">
+      </div>
+      <div class="field">
+        <label for="mk-date">Puzzle date</label>
+        <input type="date" id="mk-date">
+        <small id="mk-date-note"></small>
+      </div>
+
+      <div class="row">
+        <button class="btn" type="button" id="mk-download">Download photo</button>
+        <button class="btn ghost" type="button" id="mk-copy">Copy puzzle entry</button>
+      </div>
+      <p class="note">Put the photo in the <b>photos</b> folder and paste the entry into <b>puzzles.json</b>.</p>
+      <pre class="json" id="mk-json"></pre>
+    </div>
+  </section>
+</div>
+<script type="module" src="js/maker.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+[
+  {
+    "date": "2026-10-03",
+    "image": "photos/2026-10-03.jpg",
+    "answers": [
+      "tennis ball",
+      "tennisball",
+      "ball"
+    ],
+    "near": [
+      "golf ball",
+      "football",
+      "racket",
+      "racquet",
+      "tennis",
+      "lime",
+      "lemon",
+      "fruit",
+      "sponge",
+      "carpet"
+    ],
+    "focusX": 0.421,
+    "focusY": 0.366,
+    "credit": "Sample image"
+  },
+  {
+    "date": "2026-10-04",
+    "image": "photos/2026-10-04.jpg",
+    "answers": [
+      "button",
+      "shirt button",
+      "sewing button"
+    ],
+    "near": [
+      "coin",
+      "thread",
+      "needle",
+      "jeans",
+      "denim",
+      "shirt",
+      "fabric",
+      "plate",
+      "sewing"
+    ],
+    "focusX": 0.439,
+    "focusY": 0.439,
+    "credit": "Sample image"
+  },
+  {
+    "date": "2026-10-05",
+    "image": "photos/2026-10-05.jpg",
+    "answers": [
+      "pencil",
+      "coloured pencil",
+      "colored pencil"
+    ],
+    "near": [
+      "pen",
+      "crayon",
+      "sharpener",
+      "wood",
+      "marker",
+      "chopstick",
+      "stick"
+    ],
+    "focusX": 0.609,
+    "focusY": 0.427,
+    "credit": "Sample image"
+  }
+]
