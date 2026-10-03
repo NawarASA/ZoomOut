@@ -1,0 +1,8 @@
+# Files that are for you, not for players. Vercel won't publish these.
+CLAUDE.md
+README.md
+scripts/
+supabase/
+near-words.json
+new-photos/
+package.json

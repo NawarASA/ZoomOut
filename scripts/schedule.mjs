@@ -9,7 +9,7 @@
 //   sim-card.png           ->  answers: "sim card"
 import { readdirSync, renameSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, extname, basename } from "node:path";
-import { root, PHOTO_TYPES, iso, fileHash, plain, readPuzzles, readNearWords, applyNear } from "./lib.mjs";
+import { root, PHOTO_TYPES, iso, fileHash, plain, readPuzzles, readNearWords, applyNear, hasLocation } from "./lib.mjs";
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
@@ -59,6 +59,7 @@ for (const file of files) {
   const answers = [...new Set(name.split("+").map(a => a.replace(/[-_]+/g, " ").trim().toLowerCase()).filter(Boolean))];
 
   if (!answers.length) { skipped.push(`${file}: the file name has no answer in it`); continue; }
+  if (hasLocation(src)) { skipped.push(`${file}: contains a GPS location. Run npm run photos first`); continue; }
   const hash = fileHash(src);
   if (knownHashes.has(hash)) { skipped.push(`${file}: this exact photo is already the puzzle on ${knownHashes.get(hash)}`); continue; }
   knownHashes.set(hash, "this batch");

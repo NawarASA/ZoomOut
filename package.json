@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npx --yes serve@14 -l 3000 .",
     "check": "node scripts/check-puzzles.mjs",
-    "schedule": "node scripts/schedule.mjs"
+    "schedule": "node scripts/schedule.mjs",
+    "photos": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-photos.ps1"
   }
 }

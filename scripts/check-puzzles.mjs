@@ -2,7 +2,7 @@
 // Run with: npm run check
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { root, iso, fileHash, plain } from "./lib.mjs";
+import { root, iso, fileHash, plain, hasLocation } from "./lib.mjs";
 
 const errors = [], warnings = [];
 
@@ -35,6 +35,7 @@ list.forEach((p, i) => {
       if (hashes.has(h) && hashes.get(h) !== p.date) errors.push(`${where}: same photo as ${hashes.get(h)}, saved under a different name`);
       hashes.set(h, p.date);
       const mb = statSync(path).size / 1e6;
+      if (hasLocation(path)) errors.push(`${where}: photo contains a GPS location. Remove it with: powershell -ExecutionPolicy Bypass -File scripts/prepare-photos.ps1 ${p.image}`);
       if (mb > 2) warnings.push(`${where}: photo is ${mb.toFixed(1)} MB and will load slowly. Run it through the puzzle maker to shrink it.`);
     }
     if (!imagePaths.has(p.image)) imagePaths.set(p.image, p.date);

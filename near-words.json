@@ -12,5 +12,6 @@
   "coffee cake": ["cake", "muffin", "crumble", "pie", "pastry", "banana bread", "pound cake", "bread", "scone", "cookie"],
   "cat": ["kitten", "kitty", "dog", "puppy", "fox", "tiger", "lion", "rabbit", "fur", "animal"],
   "cake": ["cupcake", "cheesecake", "muffin", "pie", "tart", "pastry", "dessert", "brownie", "bread", "birthday cake"],
-  "bread bun": ["bun", "bread", "roll", "bread roll", "bagel", "croissant", "loaf", "brioche", "baguette", "burger", "toast", "pretzel", "dough"]
+  "bread bun": ["bun", "bread", "roll", "bread roll", "bagel", "croissant", "loaf", "brioche", "baguette", "burger", "toast", "pretzel", "dough"],
+  "zeppelin": ["hot air balloon", "balloon", "weather balloon", "plane", "airplane", "aeroplane", "aircraft", "jet", "glider", "helicopter", "rocket", "spaceship", "ufo", "submarine", "torpedo", "missile"]
 }

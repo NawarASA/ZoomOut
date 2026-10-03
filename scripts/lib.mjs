@@ -12,6 +12,27 @@ export const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
 // Fingerprint of a file's contents, so the same photo is caught even under another name.
 export const fileHash = path => createHash("sha1").update(readFileSync(path)).digest("hex");
 
+// True if a JPEG still carries a GPS location in its EXIF data.
+// Clean it with: npm run photos (or scripts/prepare-photos.ps1 <file>)
+export function hasLocation(path) {
+  try {
+    const b = readFileSync(path);
+    if (b[0] !== 0xff || b[1] !== 0xd8) return false;
+    for (let i = 2; i + 4 <= b.length && b[i] === 0xff;) {
+      const marker = b[i + 1];
+      if (marker === 0xda) break; // image data starts, no metadata after this
+      if (marker === 0xe1 && b.toString("latin1", i + 4, i + 10) === "Exif\0\0") {
+        const t = i + 10, le = b.toString("latin1", t, t + 2) === "II";
+        const u16 = o => le ? b.readUInt16LE(o) : b.readUInt16BE(o);
+        const ifd = t + (le ? b.readUInt32LE(t + 4) : b.readUInt32BE(t + 4));
+        for (let n = u16(ifd), e = ifd + 2; n-- > 0; e += 12) if (u16(e) === 0x8825) return true;
+      }
+      i += 2 + b.readUInt16BE(i + 2);
+    }
+  } catch {}
+  return false;
+}
+
 // Plain form of an answer for comparing ("Tennis Ball!" -> "tennis ball").
 export const plain = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 

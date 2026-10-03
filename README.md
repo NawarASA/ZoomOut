@@ -20,6 +20,7 @@ It's a plain static website (HTML, CSS and JavaScript, no build step), so it can
 | `css/style.css` | All styling |
 | `scripts/check-puzzles.mjs` | Checks the puzzle list for mistakes and repeats |
 | `scripts/schedule.mjs` | Schedules everything in `new-photos/` onto the next free days |
+| `scripts/prepare-photos.ps1` | Shrinks photos and strips their GPS location (`npm run photos`) |
 
 The three puzzles included (tennis ball, button, pencil) are **drawn sample images** so you can test everything. Replace them with your own photos before launch.
 
@@ -42,7 +43,9 @@ The fastest way to build a backlog.
    - `tennis-ball+ball.jpg` → answers "tennis ball" and "ball"
    - `sim-card.png` → answer "sim card"
 2. Put them all in the `new-photos/` folder.
-3. Run `npm run schedule`.
+3. Run `npm run photos`. This turns each photo the right way up, shrinks it, and removes its hidden metadata, including the GPS location phones save. Photos that still have a location are refused by the next steps.
+4. Add close guesses for each answer to `near-words.json` (see below).
+5. Run `npm run schedule`.
 
 Each photo gets the next free day (filling any gaps first), is moved into `photos/` and renamed to its date, and gets an entry in `puzzles.json`. Add `-- --shuffle` to schedule them in random order instead of alphabetical, or `-- --dry-run` to see the plan without changing anything.
 

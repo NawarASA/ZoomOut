@@ -5,7 +5,18 @@
     "answers": [
       "cat"
     ],
-    "near": [],
+    "near": [
+      "kitten",
+      "kitty",
+      "dog",
+      "puppy",
+      "fox",
+      "tiger",
+      "lion",
+      "rabbit",
+      "fur",
+      "animal"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -15,7 +26,18 @@
     "answers": [
       "cake"
     ],
-    "near": [],
+    "near": [
+      "cupcake",
+      "cheesecake",
+      "muffin",
+      "pie",
+      "tart",
+      "pastry",
+      "dessert",
+      "brownie",
+      "bread",
+      "birthday cake"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -28,7 +50,18 @@
       "bread roll",
       "bread"
     ],
-    "near": [],
+    "near": [
+      "roll",
+      "bagel",
+      "croissant",
+      "loaf",
+      "brioche",
+      "baguette",
+      "burger",
+      "toast",
+      "pretzel",
+      "dough"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -40,7 +73,17 @@
       "energy drink can",
       "can"
     ],
-    "near": [],
+    "near": [
+      "soda",
+      "soft drink",
+      "cola",
+      "coke",
+      "beer",
+      "juice",
+      "sports drink",
+      "red bull",
+      "monster"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -51,7 +94,18 @@
       "solar eclipse",
       "eclipse"
     ],
-    "near": [],
+    "near": [
+      "lunar eclipse",
+      "sun",
+      "moon",
+      "full moon",
+      "crescent",
+      "sunset",
+      "sunrise",
+      "planet",
+      "black hole",
+      "ring"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -63,7 +117,18 @@
       "paraglider",
       "paragliding"
     ],
-    "near": [],
+    "near": [
+      "parachute",
+      "parachutes",
+      "skydiver",
+      "skydiving",
+      "hang glider",
+      "glider",
+      "kite",
+      "kites",
+      "hot air balloon",
+      "balloon"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -73,7 +138,18 @@
     "answers": [
       "coffee"
     ],
-    "near": [],
+    "near": [
+      "espresso",
+      "latte",
+      "cappuccino",
+      "americano",
+      "coffee beans",
+      "tea",
+      "hot chocolate",
+      "cocoa",
+      "cup",
+      "mug"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -83,7 +159,21 @@
     "answers": [
       "sushi"
     ],
-    "near": [],
+    "near": [
+      "sashimi",
+      "maki",
+      "nigiri",
+      "onigiri",
+      "rice ball",
+      "rice",
+      "fish",
+      "salmon",
+      "tuna",
+      "seaweed",
+      "nori",
+      "japanese food",
+      "dumpling"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -94,7 +184,17 @@
       "cookie",
       "biscuit"
     ],
-    "near": [],
+    "near": [
+      "cracker",
+      "brownie",
+      "muffin",
+      "chocolate",
+      "oreo",
+      "donut",
+      "doughnut",
+      "waffle",
+      "cake"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -104,7 +204,17 @@
     "answers": [
       "mugs"
     ],
-    "near": [],
+    "near": [
+      "cup",
+      "teacup",
+      "coffee cup",
+      "glass",
+      "jug",
+      "kettle",
+      "bowl",
+      "teapot",
+      "vase"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -115,7 +225,17 @@
       "lamb",
       "sheep"
     ],
-    "near": [],
+    "near": [
+      "ram",
+      "goat",
+      "wool",
+      "alpaca",
+      "llama",
+      "mutton",
+      "lamb chop",
+      "meat",
+      "steak"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
   },
@@ -126,8 +246,49 @@
       "coffee",
       "cake"
     ],
-    "near": [],
+    "near": [
+      "espresso",
+      "latte",
+      "cappuccino",
+      "americano",
+      "coffee beans",
+      "tea",
+      "hot chocolate",
+      "cocoa",
+      "cup",
+      "mug"
+    ],
     "focusX": 0.5,
     "focusY": 0.5
+  },
+  {
+    "date": "2026-10-15",
+    "image": "photos/2026-10-15.jpg",
+    "answers": [
+      "zeppelin",
+      "blimp",
+      "airship",
+      "dirigible"
+    ],
+    "near": [
+      "hot air balloon",
+      "balloon",
+      "weather balloon",
+      "plane",
+      "airplane",
+      "aeroplane",
+      "aircraft",
+      "jet",
+      "glider",
+      "helicopter",
+      "rocket",
+      "spaceship",
+      "ufo",
+      "submarine",
+      "torpedo",
+      "missile"
+    ],
+    "focusX": 0.65,
+    "focusY": 0.64
   }
 ]
