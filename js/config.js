@@ -5,7 +5,7 @@ export const CONFIG = {
 
   // Your public address. It's added to the shared result text.
   // Leave empty until you have a domain.
-  siteUrl: "",
+  siteUrl: "https://zoomout.dev",
 
   // Where the puzzle list lives (relative to index.html).
   puzzlesFile: "puzzles.json",
