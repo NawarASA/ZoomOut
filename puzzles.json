@@ -3,68 +3,131 @@
     "date": "2026-10-03",
     "image": "photos/2026-10-03.jpg",
     "answers": [
-      "tennis ball",
-      "tennisball",
-      "ball"
+      "cat"
     ],
-    "near": [
-      "golf ball",
-      "football",
-      "racket",
-      "racquet",
-      "tennis",
-      "lime",
-      "lemon",
-      "fruit",
-      "sponge",
-      "carpet"
-    ],
-    "focusX": 0.421,
-    "focusY": 0.366,
-    "credit": "Sample image"
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
   },
   {
     "date": "2026-10-04",
     "image": "photos/2026-10-04.jpg",
     "answers": [
-      "button",
-      "shirt button",
-      "sewing button"
+      "cake"
     ],
-    "near": [
-      "coin",
-      "thread",
-      "needle",
-      "jeans",
-      "denim",
-      "shirt",
-      "fabric",
-      "plate",
-      "sewing"
-    ],
-    "focusX": 0.439,
-    "focusY": 0.439,
-    "credit": "Sample image"
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
   },
   {
     "date": "2026-10-05",
     "image": "photos/2026-10-05.jpg",
     "answers": [
-      "pencil",
-      "coloured pencil",
-      "colored pencil"
+      "bread bun",
+      "bun",
+      "bread roll",
+      "bread"
     ],
-    "near": [
-      "pen",
-      "crayon",
-      "sharpener",
-      "wood",
-      "marker",
-      "chopstick",
-      "stick"
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-06",
+    "image": "photos/2026-10-06.jpg",
+    "answers": [
+      "energy drink",
+      "energy drink can",
+      "can"
     ],
-    "focusX": 0.609,
-    "focusY": 0.427,
-    "credit": "Sample image"
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-07",
+    "image": "photos/2026-10-07.jpg",
+    "answers": [
+      "solar eclipse",
+      "eclipse"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-08",
+    "image": "photos/2026-10-08.jpg",
+    "answers": [
+      "paragliders",
+      "paraglider",
+      "paragliding"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-09",
+    "image": "photos/2026-10-09.jpg",
+    "answers": [
+      "coffee"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-10",
+    "image": "photos/2026-10-10.jpg",
+    "answers": [
+      "sushi"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-11",
+    "image": "photos/2026-10-11.jpg",
+    "answers": [
+      "cookie",
+      "biscuit"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-12",
+    "image": "photos/2026-10-12.jpg",
+    "answers": [
+      "mugs"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-13",
+    "image": "photos/2026-10-13.jpg",
+    "answers": [
+      "lamb",
+      "sheep"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
+  },
+  {
+    "date": "2026-10-14",
+    "image": "photos/2026-10-14.jpg",
+    "answers": [
+      "coffee",
+      "cake"
+    ],
+    "near": [],
+    "focusX": 0.5,
+    "focusY": 0.5
   }
 ]
