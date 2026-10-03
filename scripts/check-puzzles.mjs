@@ -48,6 +48,7 @@ list.forEach((p, i) => {
   }
   if (p.near !== undefined && !Array.isArray(p.near)) errors.push(`${where}: "near" must be a list`);
   for (const k of ["focusX", "focusY"]) if (typeof p[k] !== "number" || p[k] < 0 || p[k] > 1) errors.push(`${where}: ${k} must be a number from 0 to 1`);
+  if (p.date >= iso(new Date()) && (!Array.isArray(p.near) || !p.near.length)) warnings.push(`${where}: no close guesses, so no guess can show yellow. Add some to near-words.json and run node scripts/add-near.mjs.`);
   if (p.credit === "Sample image") warnings.push(`${where}: still a sample puzzle. Replace it before launch.`);
 });
 

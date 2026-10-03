@@ -54,6 +54,21 @@ Scheduled photos start zoomed on the **centre** and have no close guesses. To fi
 
 Large phone photos load slowly. `npm run check` warns about anything over 2 MB. Running a photo through the puzzle maker shrinks it to about 0.5 MB.
 
+## Close guesses (yellow)
+
+A guess shows **yellow** when it's close but not right. There are two kinds:
+
+- **Automatic:** any guess that shares a word with the answer, like "coffee" for *coffee cake* or "golf ball" for *tennis ball*. Singular and plural always match, so "mug" counts as correct for *mugs*.
+- **Your list:** `near-words.json` holds close words for each answer, like "biscuit" and "brownie" for *cookie*. The key is the puzzle's main answer, the first one in its file name.
+
+`npm run schedule` adds close words from that file to new photos automatically. If you edit the file later, apply the changes to puzzles already scheduled with:
+
+```bash
+node scripts/add-near.mjs
+```
+
+`npm run check` warns about any upcoming puzzle that has no close words yet.
+
 ## No repeats
 
 `npm run check` stops you from showing the same photo twice:

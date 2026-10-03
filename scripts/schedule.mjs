@@ -9,7 +9,7 @@
 //   sim-card.png           ->  answers: "sim card"
 import { readdirSync, renameSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, extname, basename } from "node:path";
-import { root, PHOTO_TYPES, iso, fileHash, plain, readPuzzles } from "./lib.mjs";
+import { root, PHOTO_TYPES, iso, fileHash, plain, readPuzzles, readNearWords, applyNear } from "./lib.mjs";
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
@@ -32,6 +32,8 @@ try { puzzles = readPuzzles(); } catch (e) {
 }
 
 // What's already in the game.
+let nearWords = new Map();
+try { nearWords = readNearWords(); } catch { console.log("! near-words.json isn't valid JSON, so no close guesses were added."); }
 const takenDates = new Set(puzzles.map(p => p.date));
 const knownHashes = new Map();
 for (const p of puzzles) {
@@ -65,6 +67,7 @@ for (const file of files) {
   const ext = extname(file).toLowerCase() === ".jpeg" ? ".jpg" : extname(file).toLowerCase();
   const image = `photos/${date}${ext}`;
   const entry = { date, image, answers, near: [], focusX: 0.5, focusY: 0.5 };
+  applyNear(entry, nearWords);
   const repeat = answers.map(plain).find(a => usedAnswers.has(a));
   added.push({ file, entry, note: repeat ? `"${repeat}" was already the answer on ${usedAnswers.get(repeat)}` : "" });
   answers.forEach(a => usedAnswers.set(plain(a), date));
@@ -79,11 +82,11 @@ if (!dryRun && added.length) {
 }
 
 if (dryRun) console.log("Dry run, nothing changed.\n");
-for (const { file, entry, note } of added) console.log(`${entry.date}  ${entry.answers.join(" / ").padEnd(28)} ← ${file}${note ? `\n            ! ${note}` : ""}`);
+for (const { file, entry, note } of added) console.log(`${entry.date}  ${entry.answers.join(" / ").padEnd(28)} ← ${file}${entry.near.length ? "" : "   (no close guesses)"}${note ? `\n            ! ${note}` : ""}`);
 for (const s of skipped) console.log(`skipped     ${s}`);
 console.log(`\n${added.length} scheduled, ${skipped.length} skipped.`);
 if (added.length) {
-  console.log("Each new puzzle starts zoomed on the centre of the photo, with no close guesses.");
-  console.log("To fine-tune one, edit its focusX/focusY and \"near\" in puzzles.json.");
+  console.log("Each new puzzle starts zoomed on the centre of the photo.");
+  console.log("Close guesses come from near-words.json. To add some later, edit that file and run node scripts/add-near.mjs.");
   console.log("Then run npm run check.");
 }

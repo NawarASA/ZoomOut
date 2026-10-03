@@ -25,22 +25,47 @@ export function lev(a, b) {
   return d[n];
 }
 
-// Same word, ignoring spaces, with 1 typo allowed from 5 letters and 2 from 9.
+// Same text, ignoring spaces, with 1 typo allowed from 5 letters and 2 from 9.
 export function close(a, b) {
   if (a === b || a.replace(/ /g, "") === b.replace(/ /g, "")) return true;
   const L = Math.max(a.length, b.length), tol = L >= 9 ? 2 : L >= 5 ? 1 : 0;
   return tol > 0 && lev(a, b) <= tol;
 }
 
-// "hit" = correct, "near" = one of the close guesses, "miss" = wrong.
+// Singular and plural count as the same word: mug/mugs, cookie/cookies, glass/glasses.
+function forms(w) {
+  const f = new Set([w]);
+  if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) f.add(w.slice(0, -1));
+  if (w.length > 4 && w.endsWith("es")) f.add(w.slice(0, -2));
+  if (w.length > 4 && w.endsWith("ies")) f.add(w.slice(0, -3) + "y");
+  return f;
+}
+function sameWord(a, b) {
+  if (a === b) return true;
+  const fa = forms(a);
+  for (const x of forms(b)) if (fa.has(x)) return true;
+  return a.length >= 5 && b.length >= 5 && close(a, b); // a typo inside one word
+}
+// Whole guess matches, word by word, allowing plurals.
+function samePhrase(a, b) {
+  const wa = a.split(" "), wb = b.split(" ");
+  return wa.length === wb.length && wa.every((w, i) => sameWord(w, wb[i]));
+}
+// Guess and answer share a meaningful word: "coffee" for coffee cake, "golf ball" for tennis ball.
+const FILLER = new Set(["and", "with", "for", "from", "made", "piece", "thing", "object", "kind", "type", "one", "some", "very", "big", "small"]);
+function shareWord(a, b) {
+  const wb = b.split(" ").filter(w => w.length >= 3 && !FILLER.has(w));
+  return a.split(" ").some(w => w.length >= 3 && !FILLER.has(w) && wb.some(x => sameWord(w, x)));
+}
+
+// "hit" = correct, "near" = close (yellow), "miss" = wrong.
 export function judge(guess, puzzle) {
   const g = norm(guess);
-  if (puzzle.answers.some(a => close(g, norm(a)))) return "hit";
-  const near = (puzzle.near || []).some(a => {
-    const n = norm(a);
-    return close(g, n) || (n.length > 3 && ` ${g} `.includes(` ${n} `));
-  });
-  return near ? "near" : "miss";
+  const answers = puzzle.answers.map(norm), near = (puzzle.near || []).map(norm);
+  if (answers.some(a => close(g, a) || samePhrase(g, a))) return "hit";
+  if (near.some(n => close(g, n) || samePhrase(g, n) || (n.length >= 3 && n.split(" ").length === 1 && shareWord(g, n)))) return "near";
+  if (answers.some(a => shareWord(g, a))) return "near";
+  return "miss";
 }
 
 // Draw the part of the photo visible at zoom z, centred on the focus point

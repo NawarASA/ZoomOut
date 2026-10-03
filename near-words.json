@@ -1,0 +1,16 @@
+{
+  "_how": "Close guesses (shown yellow) for each answer. The key is the puzzle's main answer, the first one in its file name. Edit freely, then run: node scripts/add-near.mjs",
+
+  "sushi": ["sashimi", "maki", "nigiri", "onigiri", "rice ball", "rice", "fish", "salmon", "tuna", "seaweed", "nori", "japanese food", "dumpling"],
+  "solar eclipse": ["lunar eclipse", "eclipse", "sun", "moon", "full moon", "crescent", "sunset", "sunrise", "planet", "black hole", "ring"],
+  "paragliders": ["paraglider", "paragliding", "parachute", "parachutes", "skydiver", "skydiving", "hang glider", "glider", "kite", "kites", "hot air balloon", "balloon"],
+  "mugs": ["cup", "teacup", "coffee cup", "glass", "jug", "kettle", "bowl", "teapot", "vase"],
+  "lamb": ["sheep", "ram", "goat", "wool", "alpaca", "llama", "mutton", "lamb chop", "meat", "steak"],
+  "energy drink": ["can", "soda", "soft drink", "cola", "coke", "beer", "juice", "sports drink", "red bull", "monster"],
+  "cookie": ["biscuit", "cracker", "brownie", "muffin", "chocolate", "oreo", "donut", "doughnut", "waffle", "cake"],
+  "coffee": ["espresso", "latte", "cappuccino", "americano", "coffee beans", "tea", "hot chocolate", "cocoa", "cup", "mug"],
+  "coffee cake": ["cake", "muffin", "crumble", "pie", "pastry", "banana bread", "pound cake", "bread", "scone", "cookie"],
+  "cat": ["kitten", "kitty", "dog", "puppy", "fox", "tiger", "lion", "rabbit", "fur", "animal"],
+  "cake": ["cupcake", "cheesecake", "muffin", "pie", "tart", "pastry", "dessert", "brownie", "bread", "birthday cake"],
+  "bread bun": ["bun", "bread", "roll", "bread roll", "bagel", "croissant", "loaf", "brioche", "baguette", "burger", "toast", "pretzel", "dough"]
+}

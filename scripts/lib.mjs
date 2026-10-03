@@ -15,6 +15,24 @@ export const fileHash = path => createHash("sha1").update(readFileSync(path)).di
 // Plain form of an answer for comparing ("Tennis Ball!" -> "tennis ball").
 export const plain = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 
+// The close-guess list in near-words.json, keyed by main answer.
+export function readNearWords() {
+  const path = join(root, "near-words.json");
+  if (!existsSync(path)) return new Map();
+  const raw = JSON.parse(readFileSync(path, "utf8"));
+  return new Map(Object.entries(raw).filter(([k, v]) => !k.startsWith("_") && Array.isArray(v)).map(([k, v]) => [plain(k), v]));
+}
+
+// Add any close guesses from near-words.json to a puzzle. Returns how many were added.
+export function applyNear(p, words) {
+  const list = words.get(plain(p.answers?.[0] || ""));
+  if (!list) return 0;
+  const have = new Set((p.near || []).map(plain)), answers = new Set(p.answers.map(plain));
+  const add = list.filter(w => !have.has(plain(w)) && !answers.has(plain(w)));
+  p.near = [...(p.near || []), ...add];
+  return add.length;
+}
+
 export function readPuzzles() {
   const path = join(root, "puzzles.json");
   if (!existsSync(path)) return [];
