@@ -184,6 +184,52 @@ footer a { color: var(--muted); }
 .back { justify-self: center; font: 700 0.8rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
 .back:hover { color: var(--ink); }
 
+/* how to play */
+.help-btn { justify-self: center; margin-top: 4px; display: inline-flex; align-items: center; gap: 8px; font: 700 0.82rem var(--body); color: var(--ink); background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 8px; cursor: pointer; transition: border-color .25s; animation: fadeUp .8s .8s both; }
+.help-btn:hover { border-color: var(--muted); }
+.help-btn span { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--bg); font: 800 0.75rem var(--body); }
+.help { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; }
+.help-backdrop { position: absolute; inset: 0; background: rgba(4,6,9,.78); animation: fade .25s ease both; }
+.help-sheet:focus { outline: none; }
+.help-sheet { position: relative; width: 100%; max-width: 480px; max-height: calc(100% - 8px); overflow-y: auto; overscroll-behavior: contain; padding: 22px 22px 20px; border-radius: 22px; background: linear-gradient(var(--bg-2), var(--bg-2)) padding-box, var(--coating) border-box; border: 1px solid transparent; box-shadow: 0 30px 80px rgba(0,0,0,.6); animation: rise .45s cubic-bezier(.2,.8,.2,1) both; }
+.help.closing .help-backdrop { animation: fade .2s ease reverse both; }
+.help.closing .help-sheet { animation: sink .2s ease both; }
+.help-x { position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; color: var(--muted); font: 400 1.7rem/1 var(--body); cursor: pointer; }
+.help-x:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+.help h2 { font-family: var(--display); font-weight: 900; font-size: 2.3rem; line-height: 1; letter-spacing: .03em; text-transform: uppercase; margin: 0 0 10px; }
+.help-intro { margin: 0 0 14px; color: var(--muted); }
+.help-intro b, .help p b { color: var(--ink); }
+.help-steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 12px; }
+.help-steps li { counter-increment: step; display: grid; grid-template-columns: 30px 1fr; column-gap: 12px; }
+.help-steps li::before { content: counter(step); grid-row: span 3; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 0.85rem var(--mono); color: var(--bg); background: var(--ink); }
+.help-steps h3 { margin: 3px 0 2px; font-size: 1rem; }
+.help-steps p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+.ladder { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px 6px; margin: 6px 0; max-width: 260px; }
+.ladder span { aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--line); background-color: #0d1219;
+  background-image: radial-gradient(circle, var(--c3) 0 28%, var(--c2) 29% 38%, transparent 39%);
+  background-size: calc(100% * var(--s) / 5) calc(100% * var(--s) / 5); background-position: center; }
+.ladder b { font: 700 0.62rem var(--mono); color: var(--muted); text-align: center; }
+.help-sub { margin: 18px 0 8px; font: 700 0.7rem var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 0.93rem; }
+.legend li { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); }
+.legend li b { color: var(--ink); }
+.legend > li > i { flex: none; width: 16px; height: 16px; border-radius: 50%; margin-top: 3px; }
+.legend > li > i.hit { background: var(--hit); } .legend > li > i.near { background: var(--near); } .legend > li > i.miss { background: var(--miss); } .legend > li > i.skip { background: var(--skip); }
+@media (min-width: 521px) { .legend { grid-template-columns: 1fr 1fr; column-gap: 16px; } }
+.help-foot { margin: 16px 0 14px; color: var(--muted); font-size: 0.93rem; }
+.help-go { width: 100%; }
+html.no-scroll { overflow: hidden; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sink { to { opacity: 0; transform: translateY(20px) scale(.98); } }
+@media (max-width: 520px) {
+  .help { place-items: end stretch; padding: 0; }
+  .help-sheet { max-width: none; max-height: 92%; border-radius: 22px 22px 0 0; padding: 24px 18px calc(18px + env(safe-area-inset-bottom, 0px)); animation-name: slideUp; }
+  .help.closing .help-sheet { animation: slideDown .22s ease both; }
+  .help h2 { font-size: 2rem; }
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes slideDown { to { transform: translateY(100%); } }
+
 /* phones */
 @media (max-width: 520px) {
   .wrap { gap: 16px; padding-block: 16px 40px; }
@@ -196,6 +242,13 @@ footer a { color: var(--muted); }
   .end { padding: 20px 14px; }
 }
 
+/* Reduced motion: no movement (sliding, shaking, scaling, drifting), but keep gentle fades
+   so the game still gives visible feedback. The photo itself crossfades between zoom levels. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+  #bokeh, .lens.shake, .mag.bump { animation: none; }
+  .mark span, .meta, .help-btn, nav, .lens, .rules, form.guess, .msg.pop, .guesses li, .end, .end h2 span,
+  .trail i, .maker, .help-sheet { animation-name: fade !important; animation-duration: .5s !important; }
+  .help.closing .help-sheet { animation: fade .2s ease reverse both !important; }
+  .lens svg.dial { transition: none; }
+  .btn:hover, .btn:active { transform: none; }
 }

@@ -44,14 +44,15 @@ $("mark").innerHTML = "ZOOM OUT".split("").map((ch, i) => ch === " "
 const view = (() => {
   const canvas = $("photo"), ctx = canvas.getContext("2d");
   const soft = document.createElement("canvas"), sctx = soft.getContext("2d");
-  const st = { z: 16, blur: 0, iris: 1 };
+  const prev = document.createElement("canvas"), pctx = prev.getContext("2d"); // last frame, for crossfades
+  const st = { z: 16, blur: 0, iris: 1, fade: 1, reveal: 1 };
   const tracks = new Map();
   let img = null, fx = .5, fy = .5, W = 0, H = 0, raf = 0, token = 0;
 
   function resize() {
     const d = Math.min(devicePixelRatio || 1, 2), w = Math.round(canvas.clientWidth * d), h = Math.round(canvas.clientHeight * d);
     if (!w || (w === W && h === H)) return;
-    W = canvas.width = soft.width = w; H = canvas.height = soft.height = h;
+    W = canvas.width = soft.width = prev.width = w; H = canvas.height = soft.height = prev.height = h;
     paint();
   }
   function paint() {
@@ -59,6 +60,7 @@ const view = (() => {
     ctx.fillStyle = "#05070A"; ctx.fillRect(0, 0, W, H);
     if (!img) return;
     ctx.save();
+    ctx.globalAlpha = st.reveal;
     if (st.iris < .999) { ctx.beginPath(); ctx.arc(W / 2, H / 2, Math.max(0, st.iris) * W * .72, 0, 7); ctx.clip(); }
     if (st.blur > .02) {
       // Cheap blur: draw small, then scale back up.
@@ -72,6 +74,8 @@ const view = (() => {
       drawView(ctx, img, W, H, st.z, fx, fy);
     }
     ctx.restore();
+    // Crossfade from the previous zoom level (used when the device asks for reduced motion).
+    if (st.fade < .999) { ctx.globalAlpha = 1 - st.fade; ctx.drawImage(prev, 0, 0); ctx.globalAlpha = 1; }
   }
   function loop(now) {
     for (const [k, t] of tracks) {
@@ -82,8 +86,9 @@ const view = (() => {
     paint();
     raf = tracks.size ? requestAnimationFrame(loop) : 0;
   }
-  function animate(key, dur, fn) {
-    if (reduced || dur <= 0) { tracks.delete(key); st[key] = fn(1); return paint(); }
+  // "gentle" animations (fades) still run when the device asks for reduced motion.
+  function animate(key, dur, fn, gentle = false) {
+    if ((reduced && !gentle) || dur <= 0) { tracks.delete(key); st[key] = fn(1); return paint(); }
     tracks.set(key, { start: performance.now(), dur, fn });
     if (!raf) raf = requestAnimationFrame(loop);
   }
@@ -102,6 +107,7 @@ const view = (() => {
       try { await im.decode(); } catch { await new Promise(r => { im.onload = r; im.onerror = r; }); }
       if (my !== token) return;
       img = im; resize();
+      if (reduced) { st.reveal = 0; return animate("reveal", 600, t => t, true); }
       st.iris = 0; st.blur = 1;
       animate("iris", 1100, easeOut);
       animate("blur", 1100, t => 1 - easeOut(t));
@@ -110,6 +116,11 @@ const view = (() => {
     zoomTo(z, dur = 1000) {
       const a = Math.log(st.z), b = Math.log(z);
       if (a === b) return;
+      if (reduced) { // no zooming motion: fade between the two views instead
+        if (W) { pctx.clearRect(0, 0, W, H); pctx.drawImage(canvas, 0, 0); }
+        st.z = z; st.fade = 0;
+        return animate("fade", 550, t => t, true);
+      }
       animate("z", dur, t => Math.exp(a + (b - a) * easeOut(t)));
     },
     // Lose focus for a moment, like a camera hunting.
@@ -311,6 +322,46 @@ function tick() {
 }
 setInterval(tick, 1000); tick();
 
+/* ---------------- how to play ---------------- */
+const help = (() => {
+  const box = $("help"), sheet = box.querySelector(".help-sheet"), SEEN = "zoomout-help-seen";
+  let back = null;
+  function open() {
+    if (!box.hidden) return;
+    back = document.activeElement;
+    box.classList.remove("closing"); box.hidden = false;
+    document.documentElement.classList.add("no-scroll");
+    sheet.scrollTop = 0;
+    sheet.focus({ preventScroll: true });
+  }
+  function close() {
+    if (box.hidden || box.classList.contains("closing")) return;
+    try { localStorage.setItem(SEEN, "1"); } catch {}
+    box.classList.add("closing");
+    setTimeout(() => {
+      box.hidden = true; box.classList.remove("closing");
+      document.documentElement.classList.remove("no-scroll");
+      if (back && back.focus) back.focus({ preventScroll: true });
+    }, reduced ? 0 : 210);
+  }
+  box.addEventListener("click", e => { if (e.target.closest("[data-close]")) close(); });
+  document.addEventListener("keydown", e => {
+    if (box.hidden) return;
+    if (e.key === "Escape") return close();
+    if (e.key === "Tab") { // keep keyboard focus inside the guide
+      const f = [...sheet.querySelectorAll("button")], first = f[0], last = f[f.length - 1];
+      if (document.activeElement === sheet) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+      else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  $("help-btn").addEventListener("click", open);
+  // First visit: show it once, after the intro animation.
+  let seen = true;
+  try { seen = !!localStorage.getItem(SEEN) || Object.keys(store.get().results).length > 0; } catch {}
+  return { firstVisit() { if (!seen) setTimeout(open, reduced ? 0 : 1300); } };
+})();
+
 /* ---------------- start ---------------- */
 function showError(html) {
   $("play").hidden = true;
@@ -334,6 +385,7 @@ function showError(html) {
     const first = all.map(p => p.date).sort()[0];
     return showError(first ? `The first photo arrives on <b>${parseDate(first).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</b>.` : "No puzzles yet.");
   }
+  help.firstVisit();
   const todays = published.find(p => p.date === today);
   todays ? newGame(todays, "daily") : newGame(published[published.length - 1], "fallback");
 })();

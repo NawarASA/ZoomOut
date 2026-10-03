@@ -25,6 +25,7 @@
   <header>
     <h1 class="mark" aria-label="Zoom Out" id="mark"></h1>
     <div class="meta" id="meta">&nbsp;</div>
+    <button class="help-btn" id="help-btn" type="button" aria-haspopup="dialog"><span aria-hidden="true">?</span> How to play</button>
   </header>
 
   <div class="error" id="error" hidden></div>
@@ -86,6 +87,49 @@
   </main>
 
   <footer>A new photo every day at midnight</footer>
+</div>
+
+<div class="help" id="help" hidden>
+  <div class="help-backdrop" data-close></div>
+  <section class="help-sheet" role="dialog" aria-modal="true" aria-labelledby="help-title" tabindex="-1">
+    <button class="help-x" type="button" data-close aria-label="Close">×</button>
+    <h2 id="help-title">How to play</h2>
+    <p class="help-intro">Every day there's one new mystery photo. It starts <b>extremely zoomed in</b>. Work out what it is.</p>
+
+    <ol class="help-steps">
+      <li>
+        <h3>Look closely</h3>
+        <p>The photo starts at 16× zoom, so at first it may just look like a texture or a colour.</p>
+      </li>
+      <li>
+        <h3>Make a guess</h3>
+        <p>Type what you think the object is, like <i>tennis ball</i> or <i>key</i>. Small typos are fine.</p>
+      </li>
+      <li>
+        <h3>Watch it zoom out</h3>
+        <p>Every wrong guess pulls the camera back one step and shows more of the photo. Stuck? Tap <b>Zoom out</b> to skip a guess.</p>
+      </li>
+      <li>
+        <h3>Solve it within six zooms</h3>
+        <div class="ladder" aria-hidden="true">
+          <span style="--s:16"></span><span style="--s:8"></span><span style="--s:4"></span><span style="--s:2.4"></span><span style="--s:1.5"></span><span style="--s:1"></span>
+          <b>16×</b><b>8×</b><b>4×</b><b>2.4×</b><b>1.5×</b><b>1×</b>
+        </div>
+        <p>The fewer zooms you need, the better your score.</p>
+      </li>
+    </ol>
+
+    <h3 class="help-sub">What the colours mean</h3>
+    <ul class="legend">
+      <li><i class="hit"></i><span><b>Got it.</b> You solved it.</span></li>
+      <li><i class="near"></i><span><b>Close.</b> You're on the right track, like <i>golf ball</i> for a tennis ball.</span></li>
+      <li><i class="miss"></i><span><b>No.</b> Not it this time.</span></li>
+      <li><i class="skip"></i><span><b>Skipped.</b> You zoomed out without guessing.</span></li>
+    </ul>
+
+    <p class="help-foot">A new photo arrives every day at midnight. When you're done, copy your result and see if your friends can beat it.</p>
+    <button class="btn help-go" type="button" data-close>Start playing</button>
+  </section>
 </div>
 
 <script type="module" src="js/game.js"></script>
