@@ -11,7 +11,7 @@ export const CONFIG = {
 
   // Cloudflare Web Analytics token. Leave empty to turn analytics off.
   // Cloudflare dashboard → Analytics & Logs → Web Analytics → Add a site → copy the token from the snippet.
-  cloudflareAnalyticsToken: "",
+  cloudflareAnalyticsToken: "0a221fdcfe0445dbbd72cb58f82e2072",
 
   // Supabase, for "faster than X% of players". Leave empty to turn it off.
   // Supabase dashboard → Project Settings → API (or "API Keys"): the Project URL and the
