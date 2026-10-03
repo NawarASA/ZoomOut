@@ -1,5 +1,7 @@
 import { CONFIG } from "./config.js";
 import { STEPS, norm, judge, drawView, isoDate, parseDate, daysBetween, esc } from "./core.js";
+import { crowdEnabled, submitResult, fetchStats, compare } from "./crowd.js";
+import { refreshInstall } from "./app.js";
 
 const RING_STEP = 34;          // degrees between labels on the zoom ring
 const STORE_KEY = "zoomout-v1";
@@ -226,8 +228,12 @@ function drawEnd() {
     const g = game.guesses[i];
     return `<div><i class="${g ? g.result : ""}" style="animation-delay:${400 + i * 90}ms"></i>${z}×</div>`;
   }).join("");
+  crowdLine = "";
   $("share").textContent = shareText();
   $("countdown").hidden = game.mode !== "daily";
+  $("crowd").hidden = true;
+  if (game.mode === "daily" && crowdEnabled()) showCrowd();
+  refreshInstall();
 
   if (game.mode === "daily") {
     const res = store.get().results, dates = Object.keys(res), wins = dates.filter(d => res[d].status === "won").length;
@@ -239,10 +245,48 @@ function drawEnd() {
   } else $("stats").hidden = true;
 }
 
+let crowdLine = "";
 function shareText() {
   const score = game.status === "won" ? `${game.guesses.length}/6` : "X/6";
   const trail = game.guesses.map((g, i) => `${STEPS[i]}× ${WORD[g.result].toLowerCase()}`).join("  ·  ");
-  return `Zoom Out no. ${number(game.puzzle)}  ${score}\n${trail}${CONFIG.siteUrl ? `\n${CONFIG.siteUrl}` : ""}`;
+  return `Zoom Out no. ${number(game.puzzle)}  ${score}\n${trail}${crowdLine ? `\n${crowdLine}` : ""}${CONFIG.siteUrl ? `\n${CONFIG.siteUrl}` : ""}`;
+}
+
+/* ---------------- how today's players did ---------------- */
+async function showCrowd() {
+  const g = game, won = g.status === "won", n = g.guesses.length;
+  $("crowd-head").textContent = "Comparing with today's players…";
+  $("dist").innerHTML = ""; $("dist").hidden = true;
+  $("crowd").hidden = false;
+  const counted = await submitResult(g.puzzle.date, n, won);
+  const stats = await fetchStats(g.puzzle.date);
+  if (g !== game) return; // a different puzzle was opened meanwhile
+  if (!stats || !stats.total) { $("crowd").hidden = true; return; }
+
+  const c = compare(stats, n, won, counted), fmt = x => x.toLocaleString("en-GB");
+  if (c.others < 3) {
+    $("crowd-head").innerHTML = `You're one of the first players today${stats.total > 1 ? ` (<b>${fmt(stats.total)}</b> so far)` : ""}. Check back later to see how you compare.`;
+    return;
+  }
+  if (won && c.betterThan >= 1) {
+    $("crowd-head").innerHTML = `<span class="big">Faster than ${c.betterThan}%</span>of today's <b>${fmt(c.total)}</b> players`;
+    crowdLine = `Faster than ${c.betterThan}% of players`;
+    $("share").textContent = shareText();
+  } else {
+    $("crowd-head").innerHTML = `<span class="big">${c.solvedPct}%</span>of today's <b>${fmt(c.total)}</b> players solved it`;
+  }
+
+  const counts = [...stats.solvedAt, stats.lost], max = Math.max(1, ...counts), mine = won ? n - 1 : 6;
+  const labels = [...STEPS.map(z => `${z}×`), "Missed"];
+  $("dist").innerHTML = counts.map((v, i) => {
+    const what = i < 6 ? `solved it at ${labels[i]}` : "didn't solve it";
+    return `<div class="r${i === mine ? " me" : ""}" role="row" title="${fmt(v)} player${v === 1 ? "" : "s"} ${what}">
+      <span role="rowheader">${labels[i]}</span>
+      <span role="cell"><div class="bar" style="width:${Math.max(1.5, v / max * 100)}%;animation-delay:${i * 60}ms"></div></span>
+      <span role="cell" class="n">${fmt(v)}</span></div>`;
+  }).join("");
+  $("dist").querySelector(".me .n")?.insertAdjacentHTML("afterbegin", `<span class="you">you</span>`);
+  $("dist").hidden = false;
 }
 
 function finish() {

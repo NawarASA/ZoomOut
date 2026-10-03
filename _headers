@@ -1,5 +1,11 @@
 /puzzles.json
   Cache-Control: no-cache
 
+/sw.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Content-Type: application/manifest+json
+
 /photos/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=0, must-revalidate

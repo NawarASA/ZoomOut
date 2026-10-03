@@ -119,12 +119,43 @@ A puzzle entry looks like this:
 - Past puzzles appear under **Past photos** and can be replayed. Only today's puzzle counts toward stats.
 - Stats and streaks are saved in each player's browser.
 
+## Player stats ("faster than X% of players")
+
+Uses a free Supabase database. Until it's set up, the game simply doesn't show this section.
+
+1. Sign up at https://supabase.com and create a new project (any name, a strong database password, region **Central EU (Frankfurt)** or the closest to your players).
+2. In the project, open **SQL Editor → New query**, paste everything from `supabase/setup.sql`, and click **Run**.
+3. Open **Project Settings → API Keys** (or **API**). Copy the **Project URL** and the **publishable** key (older projects call it the **anon public** key).
+4. Paste both into `js/config.js` as `supabaseUrl` and `supabaseKey`, then commit and push.
+
+Both values are meant to be public. The database only lets players add one result per day and read a summary; nobody can read, change or delete individual results.
+
+Free Supabase projects pause after a week with no activity. Once people play daily that won't happen; if it does, click **Restore** in the dashboard.
+
+## Analytics
+
+Cloudflare Web Analytics is free and needs no cookie banner.
+
+1. Cloudflare dashboard → **Analytics & Logs → Web Analytics → Add a site** → enter `zoomout.dev`.
+2. Cloudflare shows a snippet with `"token": "…"`. Copy just the token.
+3. Paste it into `js/config.js` as `cloudflareAnalyticsToken`, then commit and push.
+
+Visits from the installed app are tagged `?source=app`, so you can see how many people play from their home screen.
+
+## Install as an app
+
+The site is installable (a "web app"): `manifest.webmanifest`, the icons in `icons/`, and `sw.js` for offline support. Players see an **Install app** card on the end screen. On Android and desktop Chrome it opens the install prompt; on iPhone it shows the two Safari steps. `sw.js` always loads fresh files when online and only uses saved copies offline, so new photos and deploys show up straight away.
+
+## Link previews
+
+`og-image.jpg` is the picture shown when someone shares zoomout.dev in WhatsApp, iMessage, Instagram, X or Discord. The tags are in the `<head>` of `index.html`. Some apps cache previews for days; to refresh one, use a preview debugger like https://www.opengraph.xyz.
+
 ## Before you launch
 
 1. Replace the sample puzzles and photos with your own. `npm run check` warns you about any samples left.
-2. Set `launchDate` and `siteUrl` in `js/config.js`.
+2. Check `launchDate` and `siteUrl` in `js/config.js`.
 3. Have at least 30, ideally 60, days of puzzles scheduled.
-4. Add analytics: the snippet is ready in `index.html`, commented out. Plausible or Umami are privacy-friendly and avoid cookie banners.
+4. Set up analytics and player stats (above).
 
 ## Put it online (free)
 
@@ -143,5 +174,4 @@ Then buy a domain (around 10–15 CHF/EUR a year) and connect it in the Vercel o
 ## Known limits (fine for launch)
 
 - **The answers are visible in `puzzles.json`**, including future ones, to anyone who looks. Most players never will. A small backend that checks guesses on the server fixes this later.
-- **No "you beat X% of players" stat yet.** It needs a backend to collect results (Supabase's free tier is enough).
 - Stats are per browser, so they don't follow players between devices. Accounts would fix this, which ties in with memberships later.

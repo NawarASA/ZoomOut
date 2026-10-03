@@ -230,6 +230,30 @@ html.no-scroll { overflow: hidden; }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes slideDown { to { transform: translateY(100%); } }
 
+/* how today's players did */
+.crowd { display: grid; gap: 12px; border-top: 1px solid var(--line); padding-top: 16px; }
+.crowd-head { margin: 0; color: var(--muted); text-wrap: balance; }
+.crowd-head b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.crowd-head .big { display: block; font: 900 2.6rem/1 var(--display); color: var(--ink); letter-spacing: .02em; margin-bottom: 4px; }
+.dist { display: grid; gap: 4px; text-align: left; }
+.dist .r { display: grid; grid-template-columns: 52px 1fr minmax(3.2em, auto); align-items: center; gap: 8px; font: 700 .72rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.dist .bar { height: 14px; border-radius: 0 4px 4px 0; background: #556079; min-width: 3px; transform-origin: left; animation: grow .7s cubic-bezier(.2,.8,.2,1) both; }
+.dist .r.me { color: var(--ink); }
+.dist .r.me .bar { background: var(--c2); }
+.dist .n { text-align: right; }
+.dist .you { font: 700 .6rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c2); margin-right: 6px; }
+@keyframes grow { from { transform: scaleX(0); } to { transform: none; } }
+
+/* install as an app */
+.install { display: grid; grid-template-columns: 44px 1fr; gap: 6px 12px; align-items: center; text-align: left; border-top: 1px solid var(--line); padding-top: 16px; }
+.install img { border-radius: 10px; }
+.install p { margin: 0; color: var(--muted); font-size: .92rem; }
+.install p b { color: var(--ink); }
+.install-actions { grid-column: 1 / -1; display: flex; gap: 14px; align-items: center; }
+.install-actions .btn { padding: 11px 18px; }
+.link { background: none; border: 0; padding: 6px 2px; color: var(--muted); font: 700 .85rem var(--body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.share-ico { width: 1.1em; height: 1.1em; vertical-align: -0.18em; color: var(--ink); }
+
 /* phones */
 @media (max-width: 520px) {
   .wrap { gap: 16px; padding-block: 16px 40px; }
@@ -245,7 +269,7 @@ html.no-scroll { overflow: hidden; }
 /* Reduced motion: no movement (sliding, shaking, scaling, drifting), but keep gentle fades
    so the game still gives visible feedback. The photo itself crossfades between zoom levels. */
 @media (prefers-reduced-motion: reduce) {
-  #bokeh, .lens.shake, .mag.bump { animation: none; }
+  #bokeh, .lens.shake, .mag.bump, .dist .bar { animation: none; }
   .mark span, .meta, .help-btn, nav, .lens, .rules, form.guess, .msg.pop, .guesses li, .end, .end h2 span,
   .trail i, .maker, .help-sheet { animation-name: fade !important; animation-duration: .5s !important; }
   .help.closing .help-sheet { animation: fade .2s ease reverse both !important; }

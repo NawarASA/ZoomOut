@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "Zoom Out",
+  "short_name": "Zoom Out",
+  "description": "A new photo every day, starting extremely zoomed in. Guess the object before it zooms all the way out.",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#090C11",
+  "theme_color": "#090C11",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

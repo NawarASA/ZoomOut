@@ -5,18 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Zoom Out</title>
   <meta name="description" content="A new photo every day, starting extremely zoomed in. Guess the object before it zooms all the way out.">
-  <meta property="og:title" content="Zoom Out">
+  <link rel="canonical" href="https://zoomout.dev/">
+
+  <!-- Link previews (WhatsApp, iMessage, Instagram, X, Discord, Slack…) -->
+  <meta property="og:site_name" content="Zoom Out">
+  <meta property="og:title" content="Zoom Out · the daily zoomed-in photo game">
   <meta property="og:description" content="A new photo every day, starting extremely zoomed in. How fast can you guess it?">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zoomout.dev/">
+  <meta property="og:image" content="https://zoomout.dev/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Zoom Out: a camera lens showing an extreme close-up, with the question What is it?">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Zoom Out · the daily zoomed-in photo game">
+  <meta name="twitter:description" content="A new photo every day, starting extremely zoomed in. How fast can you guess it?">
+  <meta name="twitter:image" content="https://zoomout.dev/og-image.jpg">
+
+  <!-- Install as an app -->
+  <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#090C11">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Zoom Out">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
-  <!-- Analytics: once you have a domain, sign up at plausible.io (or self-host Umami) and uncomment:
-  <script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>
-  -->
 </head>
 <body>
 <div class="bokeh-box" aria-hidden="true"><canvas id="bokeh"></canvas></div>
@@ -77,7 +96,19 @@
         <span class="countdown" id="countdown"></span>
       </div>
       <pre class="share" id="share"></pre>
+      <section class="crowd" id="crowd" hidden aria-live="polite">
+        <p class="crowd-head" id="crowd-head">Comparing with today's players…</p>
+        <div class="dist" id="dist" role="table" aria-label="How today's players did"></div>
+      </section>
       <div class="stats" id="stats"></div>
+      <section class="install" id="install" hidden>
+        <img src="icons/icon-192.png" alt="" width="44" height="44">
+        <p><b>Play tomorrow in one tap.</b> Add Zoom Out to your home screen.</p>
+        <div class="install-actions">
+          <button class="btn" type="button" id="install-btn">Install app</button>
+          <button class="link" type="button" id="install-later">Not now</button>
+        </div>
+      </section>
     </div>
 
     <section class="archive" id="archive" hidden>
@@ -132,6 +163,28 @@
   </section>
 </div>
 
+<div class="help" id="ios-install" hidden>
+  <div class="help-backdrop" data-close></div>
+  <section class="help-sheet" role="dialog" aria-modal="true" aria-labelledby="ios-title" tabindex="-1">
+    <button class="help-x" type="button" data-close aria-label="Close">×</button>
+    <h2 id="ios-title">Add to Home Screen</h2>
+    <p class="help-intro">Zoom Out works like an app on your iPhone. It takes two taps.</p>
+    <ol class="help-steps">
+      <li>
+        <h3>Tap the Share button</h3>
+        <p>It's the square with an arrow pointing up <svg class="share-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>, at the bottom of Safari or next to the address bar.</p>
+      </li>
+      <li>
+        <h3>Choose "Add to Home Screen"</h3>
+        <p>Scroll down the menu if you don't see it, then tap <b>Add</b>.</p>
+      </li>
+    </ol>
+    <p class="help-foot">Zoom Out then opens full-screen from its own icon, with a new photo every day.</p>
+    <button class="btn help-go" type="button" data-close>Got it</button>
+  </section>
+</div>
+
+<script type="module" src="js/app.js"></script>
 <script type="module" src="js/game.js"></script>
 </body>
 </html>
