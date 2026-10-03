@@ -1,40 +1,120 @@
 import { CONFIG } from "./config.js";
-import { STEPS, norm, judge, placeZoom, isoDate, parseDate, daysBetween, esc } from "./core.js";
+import { STEPS, norm, judge, drawView, isoDate, parseDate, daysBetween, esc } from "./core.js";
 
 const RING_STEP = 34;          // degrees between labels on the zoom ring
 const STORE_KEY = "zoomout-v1";
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = id => document.getElementById(id);
 const WORD = { hit: "Got it", near: "Close", miss: "No", skip: "Skipped" };
+const touch = matchMedia("(pointer: coarse)").matches;
 
 /* ---------------- wordmark ---------------- */
 $("mark").innerHTML = "ZOOM OUT".split("").map((ch, i) => ch === " "
   ? `<span class="gap"></span>`
   : `<span class="${ch === "O" ? "o" : ""}" style="animation-delay:${i * 70}ms${ch === "O" ? `, ${i * 70}ms` : ""}">${ch}</span>`).join("");
 
-/* ---------------- drifting bokeh background ---------------- */
+/* ---------------- background lights ----------------
+   Drawn once. The gentle drift is a CSS transform, so it costs nothing per frame.
+   Only redrawn when the width changes, not when a phone's toolbar or keyboard moves. */
 (function bokeh() {
   const c = $("bokeh"), ctx = c.getContext("2d");
   const hues = ["123,97,255", "46,211,169", "244,197,75", "255,92,141"];
-  let W, H, dots;
-  function size() {
-    const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
-    c.width = W * d; c.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
-    dots = Array.from({ length: 20 }, (_, i) => ({ x: Math.random() * W, y: Math.random() * H, r: 40 + Math.random() * 140, a: .04 + Math.random() * .08, h: hues[i % 4], vx: (Math.random() - .5) * .15, vy: (Math.random() - .5) * .15 }));
-  }
-  function frame() {
-    ctx.clearRect(0, 0, W, H);
-    for (const d of dots) {
-      d.x += d.vx; d.y += d.vy;
-      if (d.x < -d.r) d.x = W + d.r; if (d.x > W + d.r) d.x = -d.r;
-      if (d.y < -d.r) d.y = H + d.r; if (d.y > H + d.r) d.y = -d.r;
-      const g = ctx.createRadialGradient(d.x, d.y, d.r * .55, d.x, d.y, d.r);
-      g.addColorStop(0, `rgba(${d.h},${d.a})`); g.addColorStop(.9, `rgba(${d.h},${d.a * .6})`); g.addColorStop(1, `rgba(${d.h},0)`);
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 7); ctx.fill();
+  let seed = 42; const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const dots = Array.from({ length: 18 }, (_, i) => ({ x: rand(), y: rand(), r: 40 + rand() * 140, a: .05 + rand() * .08, h: hues[i % 4] }));
+  let lastW = 0;
+  function paint() {
+    const w = c.clientWidth, h = c.clientHeight;
+    if (!w || Math.abs(w - lastW) < 2) return;
+    lastW = w;
+    const d = Math.min(devicePixelRatio || 1, 1.5);
+    c.width = w * d; c.height = h * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+    for (const p of dots) {
+      const x = p.x * w, y = p.y * h, g = ctx.createRadialGradient(x, y, p.r * .55, x, y, p.r);
+      g.addColorStop(0, `rgba(${p.h},${p.a})`); g.addColorStop(.9, `rgba(${p.h},${p.a * .6})`); g.addColorStop(1, `rgba(${p.h},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, p.r, 0, 7); ctx.fill();
     }
-    if (!reduced) requestAnimationFrame(frame);
   }
-  size(); addEventListener("resize", () => { size(); if (reduced) frame(); }); frame();
+  paint(); addEventListener("resize", paint);
+})();
+
+/* ---------------- the lens view ----------------
+   The photo is drawn on a canvas, cropped to what's visible, instead of scaling a
+   huge image layer. Zoom, blur and the iris opening are animated here, and the loop
+   only runs while something is moving. */
+const view = (() => {
+  const canvas = $("photo"), ctx = canvas.getContext("2d");
+  const soft = document.createElement("canvas"), sctx = soft.getContext("2d");
+  const st = { z: 16, blur: 0, iris: 1 };
+  const tracks = new Map();
+  let img = null, fx = .5, fy = .5, W = 0, H = 0, raf = 0, token = 0;
+
+  function resize() {
+    const d = Math.min(devicePixelRatio || 1, 2), w = Math.round(canvas.clientWidth * d), h = Math.round(canvas.clientHeight * d);
+    if (!w || (w === W && h === H)) return;
+    W = canvas.width = soft.width = w; H = canvas.height = soft.height = h;
+    paint();
+  }
+  function paint() {
+    if (!W) return;
+    ctx.fillStyle = "#05070A"; ctx.fillRect(0, 0, W, H);
+    if (!img) return;
+    ctx.save();
+    if (st.iris < .999) { ctx.beginPath(); ctx.arc(W / 2, H / 2, Math.max(0, st.iris) * W * .72, 0, 7); ctx.clip(); }
+    if (st.blur > .02) {
+      // Cheap blur: draw small, then scale back up.
+      const k = 1 + st.blur * 16, sw = Math.max(6, Math.round(W / k)), sh = Math.max(6, Math.round(H / k));
+      sctx.imageSmoothingQuality = "low";
+      drawView(sctx, img, sw, sh, st.z, fx, fy);
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(soft, 0, 0, sw, sh, 0, 0, W, H);
+    } else {
+      ctx.imageSmoothingQuality = "high";
+      drawView(ctx, img, W, H, st.z, fx, fy);
+    }
+    ctx.restore();
+  }
+  function loop(now) {
+    for (const [k, t] of tracks) {
+      const p = Math.min(1, (now - t.start) / t.dur);
+      st[k] = t.fn(p);
+      if (p >= 1) tracks.delete(k);
+    }
+    paint();
+    raf = tracks.size ? requestAnimationFrame(loop) : 0;
+  }
+  function animate(key, dur, fn) {
+    if (reduced || dur <= 0) { tracks.delete(key); st[key] = fn(1); return paint(); }
+    tracks.set(key, { start: performance.now(), dur, fn });
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+  new ResizeObserver(resize).observe(canvas);
+
+  return {
+    // Load a puzzle photo and open the iris on it.
+    async load(src, z, focusX, focusY) {
+      const my = ++token;
+      tracks.clear(); img = null; st.z = z; st.blur = 0; st.iris = 1; fx = focusX; fy = focusY;
+      paint();
+      const im = new Image();
+      im.src = src;
+      try { await im.decode(); } catch { await new Promise(r => { im.onload = r; im.onerror = r; }); }
+      if (my !== token) return;
+      img = im; resize();
+      st.iris = 0; st.blur = 1;
+      animate("iris", 1100, easeOut);
+      animate("blur", 1100, t => 1 - easeOut(t));
+    },
+    // Zoom smoothly to a new level (interpolated in log space so every step feels even).
+    zoomTo(z, dur = 1000) {
+      const a = Math.log(st.z), b = Math.log(z);
+      if (a === b) return;
+      animate("z", dur, t => Math.exp(a + (b - a) * easeOut(t)));
+    },
+    // Lose focus for a moment, like a camera hunting.
+    hunt() { animate("blur", 900, t => .6 * (t < .3 ? t / .3 : 1 - easeOut((t - .3) / .7))); },
+  };
 })();
 
 /* ---------------- engraved zoom ring ---------------- */
@@ -73,23 +153,18 @@ function newGame(puzzle, mode) {
     const saved = store.get().results[puzzle.date];
     if (saved) { game.guesses = saved.guesses; game.status = saved.status; }
   }
-  const img = $("photo");
-  img.src = puzzle.image;
   $("msg").textContent = ""; $("msg").className = "msg";
   $("guess-input").value = "";
   $("lens").classList.remove("win");
-  img.style.transition = "none";
+  view.load(puzzle.image, STEPS[step()], puzzle.focusX, puzzle.focusY);
   draw(true);
-  void img.offsetWidth; img.style.transition = "";
-  $("frame").classList.remove("hunt");
-  restart($("frame"), "open");
 }
 
 const step = () => game.status === "playing" ? Math.min(game.guesses.length, 5) : 5;
 
 function draw(fresh) {
   const p = game.puzzle, s = step(), done = game.status !== "playing";
-  placeZoom($("photo"), STEPS[s], p.focusX, p.focusY);
+  if (!fresh) view.zoomTo(STEPS[s]);
   $("lens").classList.toggle("done", done);
   $("lens").classList.toggle("win", game.status === "won");
   const mag = $("mag");
@@ -174,8 +249,7 @@ function say(text, cls) { const m = $("msg"); m.textContent = text; m.className 
 
 function react(result) {
   if (result === "hit") return restart($("flash"), "go");
-  $("frame").classList.remove("open");
-  restart($("frame"), "hunt");
+  view.hunt();
   if (result === "miss") restart($("lens"), "shake");
   if (result === "near") restart($("lens"), "near-pulse");
 }
@@ -193,7 +267,14 @@ $("guess-form").addEventListener("submit", e => {
   if (game.status === "won") say("Got it!", "hit");
   else if (game.status === "lost") say("That was your last zoom.", "miss");
   else say(result === "near" ? "Close. Pulling back…" : "Not that. Pulling back…", result);
-  if (game.status === "playing") $("guess-input").focus();
+  // On phones, close the keyboard so the zoom-out is visible, and bring the lens into view.
+  if (touch) {
+    $("guess-input").blur();
+    setTimeout(() => {
+      const r = $("lens").getBoundingClientRect();
+      if (r.top < 0 || r.bottom > innerHeight) $("lens").scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+    }, 250);
+  } else if (game.status === "playing") $("guess-input").focus();
 });
 
 $("skip-btn").addEventListener("click", () => {

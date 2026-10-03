@@ -43,13 +43,17 @@ export function judge(guess, puzzle) {
   return near ? "near" : "miss";
 }
 
-// Position a full-size <img> so the focus point is centred at zoom z,
-// without ever showing past the photo's edge.
-export function placeZoom(img, z, fx, fy) {
+// Draw the part of the photo visible at zoom z, centred on the focus point
+// (fx, fy from 0 to 1) and never past the photo's edge. Only the visible
+// crop is drawn, so this stays cheap on phones at any zoom level.
+export function drawView(ctx, img, w, h, z, fx, fy) {
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  const side = Math.min(iw, ih), ox = (iw - side) / 2, oy = (ih - side) / 2;
+  const s = side / z;
   const cl = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-  const tx = cl(50 - fx * z * 100, 100 - 100 * z, 0);
-  const ty = cl(50 - fy * z * 100, 100 - 100 * z, 0);
-  img.style.transform = `translate(${tx}%, ${ty}%) scale(${z})`;
+  const sx = cl(ox + fx * side - s / 2, ox, ox + side - s);
+  const sy = cl(oy + fy * side - s / 2, oy, oy + side - s);
+  ctx.drawImage(img, sx, sy, s, s, 0, 0, w, h);
 }
 
 // Dates as local "YYYY-MM-DD" strings, so a new puzzle starts at the player's midnight.

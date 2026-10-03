@@ -1,12 +1,12 @@
 import { CONFIG } from "./config.js";
-import { STEPS, placeZoom, isoDate, parseDate } from "./core.js";
+import { STEPS, drawView, isoDate, parseDate } from "./core.js";
 
 const $ = id => document.getElementById(id);
 const SIZE = 1600;          // saved photos are 1600×1600 JPEGs
-const mk = { blob: null, url: null, focusX: .5, focusY: .5 };
+const mk = { blob: null, url: null, img: null, focusX: .5, focusY: .5 };
 let taken = new Set();
 
-$("mk-strip").innerHTML = STEPS.map(z => `<div class="thumb"><div><img alt=""></div>${z}×</div>`).join("");
+$("mk-strip").innerHTML = STEPS.map(z => `<div class="thumb"><div><canvas></canvas></div>${z}×</div>`).join("");
 
 /* What's already scheduled, and the next free day. */
 (async () => {
@@ -38,7 +38,7 @@ function load(file) {
       if (mk.url) URL.revokeObjectURL(mk.url);
       mk.blob = blob; mk.url = URL.createObjectURL(blob); mk.focusX = mk.focusY = .5;
       $("mk-img").src = mk.url;
-      $("mk-strip").querySelectorAll("img").forEach(t => t.src = mk.url);
+      mk.img = c;
       $("mk-editor").hidden = false;
       update();
     }, "image/jpeg", 0.88);
@@ -70,7 +70,11 @@ function entry() {
 function update() {
   $("mk-dot").style.left = mk.focusX * 100 + "%";
   $("mk-dot").style.top = mk.focusY * 100 + "%";
-  $("mk-strip").querySelectorAll("img").forEach((t, i) => placeZoom(t, STEPS[i], mk.focusX, mk.focusY));
+  if (mk.img) $("mk-strip").querySelectorAll("canvas").forEach((t, i) => {
+    const d = Math.min(devicePixelRatio || 1, 2), w = Math.round(t.clientWidth * d) || 120;
+    t.width = t.height = w;
+    drawView(t.getContext("2d"), mk.img, w, w, STEPS[i], mk.focusX, mk.focusY);
+  });
   $("mk-json").textContent = JSON.stringify(entry(), null, 2);
   const d = $("mk-date").value;
   $("mk-date-note").textContent = taken.has(d) ? "There's already a puzzle on this date." : "";
