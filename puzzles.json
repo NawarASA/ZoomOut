@@ -222,19 +222,25 @@
     "date": "2026-10-13",
     "image": "photos/2026-10-13.jpg",
     "answers": [
+      "goat",
+      "baby goat",
+      "goat kid",
+      "kid",
       "lamb",
       "sheep"
     ],
     "near": [
       "ram",
-      "goat",
-      "wool",
       "alpaca",
       "llama",
-      "mutton",
-      "lamb chop",
-      "meat",
-      "steak"
+      "deer",
+      "fawn",
+      "calf",
+      "pony",
+      "dog",
+      "puppy",
+      "wool",
+      "animal"
     ],
     "focusX": 0.29,
     "focusY": 0.86
