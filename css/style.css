@@ -251,6 +251,13 @@ html.no-scroll { overflow: hidden; }
 .install p b { color: var(--ink); }
 .install-actions { grid-column: 1 / -1; display: flex; gap: 14px; align-items: center; }
 .install-actions .btn { padding: 11px 18px; }
+/* "Add to Discord" on the end screen and in the footer; pointless when already playing inside Discord. */
+.discord-add { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between; text-align: left; border-top: 1px solid var(--line); padding-top: 16px; }
+.discord-add p { margin: 0; flex: 1 1 220px; color: var(--muted); font-size: .92rem; }
+.discord-add p b { color: var(--ink); }
+.discord-add .btn { display: inline-flex; gap: 8px; align-items: center; padding: 11px 18px; text-decoration: none; }
+.discord-add .btn svg { color: #8C9EFF; }
+.in-discord .discord-add, .in-discord .discord-link { display: none; }
 .link { background: none; border: 0; padding: 6px 2px; color: var(--muted); font: 700 .85rem var(--body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .share-ico { width: 1.1em; height: 1.1em; vertical-align: -0.18em; color: var(--ink); }
 
