@@ -1,0 +1,14 @@
+/* Long-form text pages (privacy policy, terms). Builds on style.css. */
+.legal { max-width: 680px; padding-block: 32px 64px; gap: 0; }
+.legal .back { font: 700 0.8rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+.legal .back:hover { color: var(--ink); }
+.legal h1 { font: 900 clamp(2.4rem, 9vw, 3.4rem)/1 var(--display); text-transform: uppercase; letter-spacing: .03em; margin: 22px 0 6px; }
+.legal .updated { font: 500 0.75rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 28px; }
+.legal h2 { font: 800 1.35rem/1.2 var(--display); text-transform: uppercase; letter-spacing: .04em; margin: 32px 0 8px; }
+.legal p, .legal li { color: #C7CEDA; }
+.legal p { margin: 0 0 12px; }
+.legal ul { margin: 0 0 12px; padding-left: 20px; }
+.legal li { margin-bottom: 6px; }
+.legal strong { color: var(--ink); }
+.legal a { color: var(--c2); }
+.legal footer { margin-top: 40px; padding-top: 16px; }
