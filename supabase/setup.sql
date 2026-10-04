@@ -40,6 +40,17 @@ $$;
 revoke all on function public.puzzle_stats(date) from public;
 grant execute on function public.puzzle_stats(date) to anon;
 
+-- Discord bot: which channel each server gets the daily post in (set with /zoomout setup).
+-- Only the bot can read or change this, using the secret key that stays on Vercel. Players can't.
+create table if not exists public.discord_channels (
+  guild_id   text        primary key,
+  channel_id text        not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.discord_channels enable row level security;
+revoke all on public.discord_channels from anon, authenticated;
+
 -- Handy for you: totals per day (run on its own in the SQL Editor whenever you're curious).
 -- select puzzle_date, count(*) as players, round(100.0 * avg(won::int)) as solved_pct,
 --        round(avg(guesses) filter (where won), 1) as avg_zooms

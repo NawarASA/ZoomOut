@@ -36,6 +36,7 @@
 
   <h2>Playing inside Discord</h2>
   <p>When you play Zoom Out as a Discord Activity, the game is loaded through Discord, and Discord processes your use of it under <a href="https://discord.com/privacy">Discord's privacy policy</a>. Zoom Out does not ask you to log in with Discord and does not receive your username, profile, messages or friends list. Discord passes technical IDs (such as the ID of the channel the Activity runs in) needed to run the game; we don't store them.</p>
+  <p>If a server admin turns on daily posts with <strong>/zoomout setup</strong>, we store that server's ID and the chosen channel's ID (in our Supabase database) so the bot knows where to post. Nothing about the admin or other members is stored. <strong>/zoomout stop</strong> deletes it.</p>
 
   <h2>What we don't do</h2>
   <ul>
