@@ -14,6 +14,18 @@ const json = body => new Response(JSON.stringify(body), { headers: { "Content-Ty
 const reply = content => json({ type: 4, data: { content, flags: EPHEMERAL, allowed_mentions: { parse: [] } } });
 const launchActivity = () => json({ type: 12 });
 
+// Open https://zoomout.dev/api/discord in a browser to see which settings the bot can find (never their values).
+export function GET() {
+  const set = name => Boolean(process.env[name]?.trim());
+  return json({
+    DISCORD_PUBLIC_KEY: /^[0-9a-f]{64}$/i.test(process.env.DISCORD_PUBLIC_KEY?.trim() ?? "") ? "ok" : set("DISCORD_PUBLIC_KEY") ? "set, but doesn't look like a public key (64 letters/digits)" : "missing",
+    DISCORD_BOT_TOKEN: set("DISCORD_BOT_TOKEN") ? "ok" : "missing",
+    SUPABASE_URL: set("SUPABASE_URL") ? "ok" : "missing",
+    SUPABASE_SECRET_KEY: set("SUPABASE_SECRET_KEY") ? "ok" : "missing",
+    CRON_SECRET: set("CRON_SECRET") ? "ok" : "missing",
+  });
+}
+
 export async function POST(request) {
   const body = await request.text();
   if (!fromDiscord(request, body)) return new Response("Bad signature", { status: 401 });
@@ -63,7 +75,7 @@ function fromDiscord(request, body) {
   if (!sig || !ts || !process.env.DISCORD_PUBLIC_KEY) return false;
   try {
     const key = createPublicKey({
-      key: Buffer.concat([Buffer.from("302a300506032b6570032100", "hex"), Buffer.from(process.env.DISCORD_PUBLIC_KEY, "hex")]),
+      key: Buffer.concat([Buffer.from("302a300506032b6570032100", "hex"), Buffer.from(process.env.DISCORD_PUBLIC_KEY.trim(), "hex")]),
       format: "der",
       type: "spki",
     });
