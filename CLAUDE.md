@@ -1,6 +1,6 @@
 # Zoom Out — project notes for Claude
 
-Zoom Out is a daily photo guessing game, live at https://zoomout.dev. Every day one photo starts at 16× zoom; each wrong guess (or "Zoom out") pulls back a step through 16×, 8×, 4×, 2.4×, 1.5×, 1×. Six tries. Built and run by Nawar.
+Zoom Out is a daily photo guessing game, live at https://zoomout.dev. Every day one photo starts at 16× zoom; each wrong guess (or "Zoom out") pulls back a step through 16×, 12×, 8×, 5×, 2.5×, 1× (`STEPS` in `js/core.js`; was 16/8/4/2.4/1.5/1 until 2026-10-04, players said it was too easy by the third guess). Six tries. Built and run by Nawar.
 
 ## How it's built
 - Plain static site: HTML, CSS, vanilla JS modules. No framework, no build step.

@@ -1,7 +1,9 @@
 // Shared game logic used by both the game and the puzzle maker.
 
 // Zoom level for each of the six steps, from closest to the full photo.
-export const STEPS = [16, 8, 4, 2.4, 1.5, 1];
+// Pulls back slowly at first so the third guess (8×) is still a close-up; the big reveal comes last.
+// Was 16, 8, 4, 2.4, 1.5, 1 until 2026-10-04 (too easy by the third guess).
+export const STEPS = [16, 12, 8, 5, 2.5, 1];
 
 // Turn a guess into a plain comparable form: lowercase, no accents,
 // no punctuation, no "a/an/the".
