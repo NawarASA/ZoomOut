@@ -18,4 +18,7 @@ export const CONFIG = {
   // publishable / anon key. Both are safe to put here; they are meant to be public.
   supabaseUrl: "",
   supabaseKey: "",
+
+  // Discord Activity (the game inside Discord). Discord Developer Portal → your app → Application ID.
+  discordClientId: "1556278128228175872",
 };

@@ -1,16 +1,25 @@
-// App extras: offline support, analytics, and the "install as an app" button.
+// App extras: Discord Activity, offline support, analytics, and the "install as an app" button.
 import { CONFIG } from "./config.js";
 
 const $ = id => document.getElementById(id);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/* ---------------- Discord Activity ---------------- */
+// Opened inside Discord? Discord serves the site from <app id>.discordsays.com and adds frame_id.
+export const inDiscord = location.hostname.endsWith(".discordsays.com") || new URLSearchParams(location.search).has("frame_id");
+if (inDiscord) {
+  document.documentElement.classList.add("in-discord");
+  try { await import("./discord.js"); } catch (e) { console.warn("Discord SDK didn't start", e); }
+}
+
 /* ---------------- offline support ---------------- */
-if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+if (!inDiscord && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
 }
 
 /* ---------------- Cloudflare Web Analytics ---------------- */
-if (CONFIG.cloudflareAnalyticsToken) {
+// Not inside Discord: it blocks the analytics server.
+if (CONFIG.cloudflareAnalyticsToken && !inDiscord) {
   const s = document.createElement("script");
   s.defer = true;
   s.src = "https://static.cloudflareinsights.com/beacon.min.js";
@@ -30,7 +39,7 @@ function dismissed() { try { return !!localStorage.getItem(DISMISS); } catch { r
 export function refreshInstall() {
   const box = $("install");
   if (!box) return;
-  box.hidden = installed() || dismissed() || !(deferred || isIOS);
+  box.hidden = inDiscord || installed() || dismissed() || !(deferred || isIOS);
 }
 
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; refreshInstall(); });

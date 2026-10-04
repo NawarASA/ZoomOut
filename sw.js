@@ -1,9 +1,9 @@
 // Offline support for Zoom Out.
 // Everything is fetched fresh from the network first, so a new deploy or a new photo
 // shows up straight away. The saved copy is only used when there's no connection.
-const CACHE = "zoomout-v1";
+const CACHE = "zoomout-v2";
 const SHELL = [
-  "/", "/css/style.css", "/js/game.js", "/js/core.js", "/js/config.js", "/js/app.js", "/js/crowd.js",
+  "/", "/css/fonts.css", "/css/style.css", "/js/game.js", "/js/core.js", "/js/config.js", "/js/app.js", "/js/crowd.js",
   "/puzzles.json", "/manifest.webmanifest", "/icons/icon-192.png", "/favicon.svg",
 ];
 

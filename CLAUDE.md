@@ -13,6 +13,8 @@ Zoom Out is a daily photo guessing game, live at https://zoomout.dev. Every day 
 - `photos/` named by date · `new-photos/` inbox for the scheduler (gitignored)
 - `near-words.json` close guesses keyed by main answer
 - `scripts/` Node CLI: `schedule.mjs` (file name = answer, `+` separates alternatives, `--shuffle`, `--dry-run`), `add-near.mjs`, `check-puzzles.mjs` (`npm run check`, also blocks photos with GPS), `remove-samples.mjs`, shared `lib.mjs`; `prepare-photos.ps1` (`npm run photos`, Windows PowerShell + System.Drawing)
+- `js/discord.js` Discord Activity (app ID 1556278128228175872): loaded by `app.js` only inside Discord (`*.discordsays.com` / `frame_id`), calls `ready()`; `js/discord-sdk.js` is the vendored, esbuild-bundled `@discord/embedded-app-sdk` 2.5.0. Discord blocks all other hosts, so any new outside service needs a URL mapping in the Developer Portal plus `patchUrlMappings`. No Discord login yet (that would need a token-exchange function and the Client Secret in Vercel env vars, never in the repo).
+- Fonts are self-hosted (`fonts/`, `css/fonts.css`), not Google Fonts: needed for Discord's CSP and avoids the EU privacy issue.
 - `sw.js` network-first service worker (offline fallback only, never serves stale files when online)
 - `manifest.webmanifest`, `icons/`, `og-image.jpg` (link preview), `supabase/setup.sql`
 - Hosting: GitHub repo NawarASA/ZoomOut (private) → Vercel auto-deploys every push to `main`. Domain on Cloudflare, DNS records CNAME → Vercel, proxy OFF (grey cloud). `vercel.json` / `_headers` set cache headers.
