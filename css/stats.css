@@ -1,0 +1,32 @@
+/* Private stats page (stats.html). Builds on style.css and legal.css. */
+.stats-page { max-width: 760px; }
+.stats-page .muted { color: var(--muted); }
+.totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.totals .tile { background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 2px; }
+.totals .tile b { font: 900 2rem/1 var(--display); color: var(--ink); }
+.totals .tile span { font: 500 .72rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+.key { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .85rem; color: var(--muted); margin: 0 0 18px; }
+.key span { display: inline-flex; gap: 6px; align-items: center; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw.solved { background: var(--hit); } .sw.missed { background: var(--miss); }
+
+.days { display: grid; gap: 12px; }
+.day { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; }
+.day header { display: flex; justify-content: space-between; align-items: start; gap: 12px; text-align: left; }
+.day .no { font: 500 .72rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.day h2 { margin: 4px 0 0; font-size: 1.5rem; }
+.day .reveal { font: 700 .8rem var(--body); color: var(--ink); background: transparent; border: 1px dashed var(--muted); border-radius: 999px; padding: 6px 12px; cursor: pointer; text-transform: none; letter-spacing: 0; }
+.flag { font: 700 .7rem var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+.flag.easy { color: var(--near); border: 1px solid var(--near); }
+.flag.hard { color: var(--miss); border: 1px solid var(--miss); }
+.day .facts { margin: 8px 0 12px; font-size: .92rem; }
+
+/* One small column chart per day: players who solved it at each zoom, plus missed. */
+.bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; align-items: end; height: 120px; }
+.col { display: grid; grid-template-rows: auto 1fr auto; height: 100%; text-align: center; cursor: default; }
+.col .n { font: 700 .78rem var(--mono); color: var(--ink); min-height: 1.2em; }
+.col .bar { align-self: end; justify-self: center; width: min(36px, 80%); height: calc(var(--h) * 100%); min-height: 2px; border-radius: 4px 4px 0 0; background: var(--hit); }
+.col.missed .bar { background: var(--miss); }
+.col .lbl { font: 500 .7rem var(--mono); color: var(--muted); padding-top: 6px; border-top: 1px solid var(--line); }
+.col:hover .bar { filter: brightness(1.2); }

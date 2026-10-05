@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Puzzle Stats · Zoom Out</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#090C11">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/legal.css">
+  <link rel="stylesheet" href="css/stats.css">
+</head>
+<body>
+<main class="wrap legal stats-page">
+  <a class="back" href="/">&larr; Back to the game</a>
+  <h1>Puzzle stats</h1>
+  <p class="updated">How players did on each daily puzzle</p>
+
+  <section class="totals" id="totals" aria-live="polite"><p class="muted">Loading…</p></section>
+
+  <p class="key">
+    <span><i class="sw solved"></i>Solved at that zoom</span>
+    <span><i class="sw missed"></i>Missed</span>
+    <span><b class="flag easy">Too easy</b> a quarter or more solved it on the first guess</span>
+    <span><b class="flag hard">Too hard</b> fewer than half solved it</span>
+  </p>
+
+  <section id="days" class="days"></section>
+
+  <footer>Only the daily puzzle counts, one result per player per day. Days before 4 Oct used the old zoom steps (16, 8, 4, 2.4, 1.5, 1).</footer>
+</main>
+<script type="module" src="js/stats.js"></script>
+</body>
+</html>
