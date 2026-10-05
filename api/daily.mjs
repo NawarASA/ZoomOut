@@ -1,10 +1,14 @@
 // Posts the new puzzle to every server that ran /zoomout setup.
 // Vercel runs this once a day around 8:00 Swiss time (the "crons" entry in vercel.json).
-import { db, discordApi, reminder } from "./_shared.mjs";
+import { db, discordApi, reminder, reminderFor, swissDate } from "./_shared.mjs";
 
 export async function GET(request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) return new Response("Unauthorized", { status: 401 });
+
+  // Keep Discord results only as long as they're useful (privacy policy: 30 days).
+  await db(`discord_results?puzzle_date=lt.${swissDate(-30)}`, { method: "DELETE" });
+  await db(`discord_boards?puzzle_date=lt.${swissDate(-3)}`, { method: "DELETE" });
 
   const msg = await reminder();
   if (!msg) return new Response("No puzzle today, nothing posted.");
@@ -14,7 +18,7 @@ export async function GET(request) {
 
   let sent = 0, failed = 0;
   for (const { guild_id, channel_id } of await res.json()) {
-    const r = await discordApi(`/channels/${channel_id}/messages`, { method: "POST", body: JSON.stringify(msg) });
+    const r = await discordApi(`/channels/${channel_id}/messages`, { method: "POST", body: JSON.stringify(await reminderFor(msg, guild_id)) });
     if (r.ok) { sent++; continue; }
     failed++;
     console.warn(`Couldn't post to server ${guild_id}: ${r.status} ${await r.text()}`);

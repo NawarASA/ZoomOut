@@ -297,6 +297,10 @@ function finish() {
     const s = store.get();
     s.results[game.puzzle.date] = { status: game.status, guesses: game.guesses };
     store.set(s);
+    // For the Discord Activity's "who solved it today" (js/discord.js); nothing listens on the website.
+    dispatchEvent(new CustomEvent("zoomout:daily-finished", {
+      detail: { date: game.puzzle.date, guesses: game.guesses.length, won: game.status === "won" },
+    }));
   }
 }
 

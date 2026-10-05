@@ -13,5 +13,28 @@ if (CONFIG.supabaseUrl) patchUrlMappings([{ prefix: "/supabase", target: new URL
 
 export const discord = new DiscordSDK(CONFIG.discordClientId);
 
-// Tells Discord the Activity has loaded. The game doesn't wait for it.
-discord.ready().catch(e => console.warn("Discord handshake failed", e));
+// Tells Discord the Activity has loaded, then asks once for permission to see the player's
+// Discord username ("identify"), for the "who solved it today" scoreboard in the server.
+// The game never waits for this; declining just means no scoreboard.
+const signIn = (async () => {
+  await discord.ready();
+  const { code } = await discord.commands.authorize({
+    client_id: CONFIG.discordClientId, response_type: "code", state: "", prompt: "none", scope: ["identify"],
+  });
+  const res = await fetch("/api/token", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
+  if (!res.ok) throw new Error(`token exchange ${res.status}`);
+  const { access_token } = await res.json();
+  await discord.commands.authenticate({ access_token });
+  return access_token;
+})().catch(e => { console.warn("Discord sign-in skipped", e); return null; });
+
+// Fired by game.js when today's puzzle is finished.
+addEventListener("zoomout:daily-finished", async ({ detail }) => {
+  const access_token = await signIn;
+  if (!access_token) return;
+  fetch("/api/discord-result", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ access_token, instance_id: discord.instanceId, ...detail }),
+  }).catch(() => {});
+});

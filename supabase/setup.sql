@@ -51,6 +51,32 @@ create table if not exists public.discord_channels (
 alter table public.discord_channels enable row level security;
 revoke all on public.discord_channels from anon, authenticated;
 
+-- Discord "who solved it today": results of players in the Discord Activity, per server.
+-- Kept 30 days (api/daily.mjs deletes older rows). Bot only, like the table above.
+create table if not exists public.discord_results (
+  puzzle_date date        not null,
+  guild_id    text        not null,
+  user_id     text        not null,
+  guesses     smallint    not null check (guesses between 1 and 6),
+  won         boolean     not null,
+  created_at  timestamptz not null default now(),
+  primary key (puzzle_date, guild_id, user_id)
+);
+
+alter table public.discord_results enable row level security;
+revoke all on public.discord_results from anon, authenticated;
+
+-- The scoreboard message in each channel for each day, so it's edited instead of posted again.
+create table if not exists public.discord_boards (
+  puzzle_date date not null,
+  channel_id  text not null,
+  message_id  text,
+  primary key (puzzle_date, channel_id)
+);
+
+alter table public.discord_boards enable row level security;
+revoke all on public.discord_boards from anon, authenticated;
+
 -- Handy for you: totals per day (run on its own in the SQL Editor whenever you're curious).
 -- select puzzle_date, count(*) as players, round(100.0 * avg(won::int)) as solved_pct,
 --        round(avg(guesses) filter (where won), 1) as avg_zooms

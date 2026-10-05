@@ -28,6 +28,7 @@ export async function GET() {
     SUPABASE_URL: set("SUPABASE_URL") ? "ok" : "missing",
     SUPABASE_SECRET_KEY: set("SUPABASE_SECRET_KEY") ? "ok" : "missing",
     CRON_SECRET: set("CRON_SECRET") ? "ok" : "missing",
+    DISCORD_CLIENT_SECRET: set("DISCORD_CLIENT_SECRET") ? "ok" : "missing (needed for \"who solved it today\")",
   });
 }
 
