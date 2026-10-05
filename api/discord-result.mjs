@@ -5,16 +5,21 @@
 // - who they are comes from Discord, using their access token;
 // - which server and channel comes from Discord's record of the Activity session,
 //   which also has to list them as a player (so nobody can post into other servers).
-import { APP_ID, db, discordApi, swissDate, updateBoard } from "./_shared.mjs";
+import { APP_ID, db, discordApi, swissDate, postFinish, puzzleNumber } from "./_shared.mjs";
+import { renderCard, avatarUrl } from "./_card.mjs";
+
+const RESULTS = ["hit", "near", "miss", "skip"];
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
 export async function POST(request) {
   const b = await request.json().catch(() => null);
-  const guesses = Number(b?.guesses);
+  const guesses = Number(b?.guesses), trail = b?.trail;
   if (!b || typeof b.access_token !== "string" || typeof b.instance_id !== "string" ||
       !Number.isInteger(guesses) || guesses < 1 || guesses > 6 || typeof b.won !== "boolean" ||
-      ![swissDate(-1), swissDate(), swissDate(1)].includes(b.date)) {   // allow for players' time zones
+      ![swissDate(-1), swissDate(), swissDate(1)].includes(b.date) ||   // allow for players' time zones
+      !Array.isArray(trail) || trail.length !== guesses || !trail.every(r => RESULTS.includes(r)) ||
+      (trail.at(-1) === "hit") !== b.won) {
     return json({ error: "bad request" }, 400);
   }
 
@@ -28,14 +33,20 @@ export async function POST(request) {
   if (!users.includes(user.id)) return json({ error: "not in this activity" }, 403);
   if (!location?.guild_id) return json({ ok: true, board: false }); // DMs: nowhere to post a scoreboard
 
-  // First result of the day counts; replays don't overwrite it.
+  // First result of the day counts; replays don't overwrite it or post again.
   const saved = await db("discord_results?on_conflict=puzzle_date,guild_id,user_id", {
     method: "POST",
-    headers: { Prefer: "resolution=ignore-duplicates,return=minimal" },
+    headers: { Prefer: "resolution=ignore-duplicates,return=representation" },
     body: JSON.stringify({ puzzle_date: b.date, guild_id: location.guild_id, user_id: user.id, guesses, won: b.won }),
   });
   if (!saved.ok) return json({ error: "couldn't save" }, 500);
+  if (!(await saved.json()).length) return json({ ok: true, posted: false }); // already counted today
 
-  await updateBoard(b.date, location.guild_id, location.channel_id);
-  return json({ ok: true, board: true });
+  // The card is drawn from Discord's copy of the name and avatar; neither is stored.
+  const card = await renderCard({
+    number: puzzleNumber(b.date), name: user.global_name || user.username, avatar: avatarUrl(user),
+    won: b.won, guesses, trail,
+  });
+  const posted = await postFinish({ date: b.date, guild: location.guild_id, channel: location.channel_id, user: user.id, guesses, won: b.won, card });
+  return json({ ok: true, posted });
 }

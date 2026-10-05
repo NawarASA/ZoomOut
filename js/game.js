@@ -299,7 +299,7 @@ function finish() {
     store.set(s);
     // For the Discord Activity's "who solved it today" (js/discord.js); nothing listens on the website.
     dispatchEvent(new CustomEvent("zoomout:daily-finished", {
-      detail: { date: game.puzzle.date, guesses: game.guesses.length, won: game.status === "won" },
+      detail: { date: game.puzzle.date, guesses: game.guesses.length, won: game.status === "won", trail: game.guesses.map(g => g.result) },
     }));
   }
 }

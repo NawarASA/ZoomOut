@@ -1,14 +1,55 @@
 {
   "headers": [
-    { "source": "/puzzles.json", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
-    { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
-    { "source": "/manifest.webmanifest", "headers": [{ "key": "Content-Type", "value": "application/manifest+json" }] },
-    { "source": "/photos/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] }
+    {
+      "source": "/puzzles.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
+    },
+    {
+      "source": "/photos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ],
   "crons": [
-    { "path": "/api/daily", "schedule": "0 6 * * *" }
+    {
+      "path": "/api/daily",
+      "schedule": "0 6 * * *"
+    }
   ],
   "functions": {
-    "api/daily.mjs": { "maxDuration": 60 }
+    "api/daily.mjs": {
+      "maxDuration": 60
+    },
+    "api/discord-result.mjs": {
+      "maxDuration": 30,
+      "includeFiles": "api/_fonts/**"
+    }
   }
 }

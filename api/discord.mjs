@@ -65,7 +65,7 @@ async function setup(guild, channel) {
   const msg = await reminder().catch(() => null);
   if (msg) {
     const sent = await discordApi(`/channels/${channel}/messages`, { method: "POST", body: JSON.stringify(msg) });
-    if (!sent.ok) return reply(`Saved, but I can't post in <#${channel}> yet. Make sure ZoomOut was added to this server with its bot, and has View Channel, Send Messages and Embed Links there.`);
+    if (!sent.ok) return reply(`Saved, but I can't post in <#${channel}> yet. Make sure ZoomOut was added to this server with its bot, and has View Channel, Send Messages, Embed Links and Attach Files there.`);
   }
   return reply(`Done. The new puzzle will be posted in <#${channel}> every morning.`);
 }
