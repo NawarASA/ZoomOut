@@ -49,7 +49,7 @@
     },
     "api/discord-result.mjs": {
       "maxDuration": 30,
-      "includeFiles": "api/_fonts/**"
+      "includeFiles": "{api/_fonts/**,node_modules/harfbuzzjs/*.wasm,node_modules/satori/*.wasm}"
     }
   }
 }
