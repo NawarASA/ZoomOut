@@ -16,8 +16,8 @@ export const CONFIG = {
   // Supabase, for "faster than X% of players". Leave empty to turn it off.
   // Supabase dashboard → Project Settings → API (or "API Keys"): the Project URL and the
   // publishable / anon key. Both are safe to put here; they are meant to be public.
-  supabaseUrl: "",
-  supabaseKey: "",
+  supabaseUrl: "https://oyqugcienpdyvuhtnnto.supabase.co",
+  supabaseKey: "sb_publishable_Ojn1uKd3xMOmhcwMUMs8tA_LHGN4YAv",
 
   // Discord Activity (the game inside Discord). Discord Developer Portal → your app → Application ID.
   discordClientId: "1556278128228175872",

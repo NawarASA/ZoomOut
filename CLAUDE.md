@@ -43,6 +43,6 @@ Zoom Out is a daily photo guessing game, live at https://zoomout.dev. Every day 
 - Prefers short, plain explanations and step-by-step commands. Test changes in a browser at phone size before calling them done.
 
 ## Open to-dos
-- Set up Supabase (steps in README) so "faster than X%" switches on, ideally before the public launch.
+- Supabase is live (project oyqugcienpdyvuhtnnto, Frankfurt): "faster than X%" is on. Inside Discord it needs the URL mapping /supabase -> oyqugcienpdyvuhtnnto.supabase.co.
 - Next photo batch before 15 October (current puzzles run out then).
 - Ideas not built yet: daily reveal-video export for TikTok/Reels, German version (UI + German answers), hint button, hard mode, hiding answers from `puzzles.json` (server-side checking).
