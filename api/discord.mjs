@@ -15,9 +15,14 @@ const reply = content => json({ type: 4, data: { content, flags: EPHEMERAL, allo
 const launchActivity = () => json({ type: 12 });
 
 // Open https://zoomout.dev/api/discord in a browser to see which settings the bot can find (never their values).
-export function GET() {
+export async function GET() {
   const set = name => Boolean(process.env[name]?.trim());
+  // A real read of the bot's table with the secret key (only "ok" or the error code is shown).
+  const database = set("SUPABASE_URL") && set("SUPABASE_SECRET_KEY")
+    ? await db("discord_channels?select=guild_id&limit=1").then(r => r.ok ? "ok" : `error ${r.status}`, () => "can't reach SUPABASE_URL")
+    : "missing settings";
   return json({
+    database,
     DISCORD_PUBLIC_KEY: /^[0-9a-f]{64}$/i.test(process.env.DISCORD_PUBLIC_KEY?.trim() ?? "") ? "ok" : set("DISCORD_PUBLIC_KEY") ? "set, but doesn't look like a public key (64 letters/digits)" : "missing",
     DISCORD_BOT_TOKEN: set("DISCORD_BOT_TOKEN") ? "ok" : "missing",
     SUPABASE_URL: set("SUPABASE_URL") ? "ok" : "missing",
