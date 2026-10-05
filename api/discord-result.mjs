@@ -6,11 +6,21 @@
 // - which server and channel comes from Discord's record of the Activity session,
 //   which also has to list them as a player (so nobody can post into other servers).
 import { APP_ID, db, discordApi, swissDate, postFinish, puzzleNumber } from "./_shared.mjs";
-import { renderCard, avatarUrl } from "./_card.mjs";
 
 const RESULTS = ["hit", "near", "miss", "skip"];
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+
+// Open https://zoomout.dev/api/discord-result to check that result cards can be drawn here.
+export async function GET() {
+  try {
+    const { renderCard } = await import("./_card.mjs");
+    const png = await renderCard({ number: 1, name: "Test", avatar: "https://cdn.discordapp.com/embed/avatars/0.png", won: true, guesses: 2, trail: ["near", "hit"] });
+    return json({ card: "ok", bytes: png.length });
+  } catch (e) {
+    return json({ card: "error", message: String(e?.message || e).slice(0, 300) }, 500);
+  }
+}
 
 export async function POST(request) {
   const b = await request.json().catch(() => null);
@@ -43,6 +53,8 @@ export async function POST(request) {
   if (!(await saved.json()).length) return json({ ok: true, posted: false }); // already counted today
 
   // The card is drawn from Discord's copy of the name and avatar; neither is stored.
+  // Loaded here, not at the top, so a problem with the image libraries can't break the rest.
+  const { renderCard, avatarUrl } = await import("./_card.mjs");
   const card = await renderCard({
     number: puzzleNumber(b.date), name: user.global_name || user.username, avatar: avatarUrl(user),
     won: b.won, guesses, trail,
