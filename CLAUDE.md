@@ -29,7 +29,7 @@ Zoom Out is a daily photo guessing game, live at https://zoomout.dev. Every day 
 - Background lights are drawn once and drifted with a CSS transform; only redraw on width change (phone toolbars/keyboard must not cause jitter).
 - Reduced-motion users get gentle fades (photo crossfades between zoom levels), not zero animation.
 - Close guesses (yellow): automatic when a guess shares a word with the answer; singular/plural always match; extra words come from `near-words.json`. Free word-association APIs (Datamuse) were tested and rejected as too noisy. Nawar sends new batches and Claude writes the near-words entries by hand.
-- Memberships/paid puzzle making are postponed until there's a daily audience.
+- Memberships/paid puzzle making are postponed until there's a daily audience. Planned (2026-10-06, Nawar will build it later): custom puzzle upload + share links, monetized as a subscription ("Zoom Out Plus"). Needs: accounts (Supabase magic link and/or Discord login), a payment provider (merchant of record such as Lemon Squeezy/Paddle recommended, since a Swiss seller owes EU VAT from the first sale), Vercel Pro or a move to Cloudflare Pages (Vercel Hobby forbids commercial use), moderation for uploads (report button, takedown process), and legal pages (imprint with name and address, subscription terms, EU 14-day withdrawal right). Suggested model: free tier can create a few puzzles (shared links are a growth tool), Plus is unlimited plus extras.
 - Analytics: Cloudflare Web Analytics with manual token (not proxy auto-inject).
 
 ## Every new photo Nawar sends (always, without being asked)
