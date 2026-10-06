@@ -236,6 +236,8 @@ function drawEnd() {
   refreshInstall();
 
   if (game.mode === "daily") {
+    // Lets the Discord Activity offer "Post to channel" (js/discord.js); nothing listens on the website.
+    dispatchEvent(new CustomEvent("zoomout:daily-end-shown", { detail: dailyResult() }));
     const res = store.get().results, dates = Object.keys(res), wins = dates.filter(d => res[d].status === "won").length;
     let streak = 0;
     for (let d = parseDate(game.puzzle.date); res[isoDate(d)]?.status === "won"; d.setDate(d.getDate() - 1)) streak++;
@@ -298,11 +300,12 @@ function finish() {
     s.results[game.puzzle.date] = { status: game.status, guesses: game.guesses };
     store.set(s);
     // For the Discord Activity's "who solved it today" (js/discord.js); nothing listens on the website.
-    dispatchEvent(new CustomEvent("zoomout:daily-finished", {
-      detail: { date: game.puzzle.date, guesses: game.guesses.length, won: game.status === "won", trail: game.guesses.map(g => g.result) },
-    }));
+    dispatchEvent(new CustomEvent("zoomout:daily-finished", { detail: dailyResult() }));
   }
 }
+
+// Today's finished result, without the guessed words (they could give the answer away).
+const dailyResult = () => ({ date: game.puzzle.date, guesses: game.guesses.length, won: game.status === "won", trail: game.guesses.map(g => g.result) });
 
 function say(text, cls) { const m = $("msg"); m.textContent = text; m.className = "msg " + (cls || ""); restart(m, "pop"); }
 

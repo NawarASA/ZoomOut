@@ -67,7 +67,7 @@ export async function postFinish({ date, guild, channel, user, guesses, won, car
   }));
   form.append("files[0]", new Blob([card], { type: "image/png" }), "zoomout-result.png");
   const posted = await discordApi(`/channels/${channel}/messages`, { method: "POST", body: form });
-  if (!posted.ok) { console.warn(`Couldn't post result in ${channel}: ${posted.status} ${await posted.text()}`); return false; }
+  if (!posted.ok) { console.warn(`Couldn't post result in ${channel}: ${posted.status} ${await posted.text()}`); return { ok: false, status: posted.status }; }
   const { id } = await posted.json();
 
   // The newest result message in the channel holds the scoreboard. Message IDs grow over
@@ -89,7 +89,7 @@ export async function postFinish({ date, guild, channel, user, guesses, won, car
     if (holds) previous = row?.message_id ?? null;
   }
   if (previous) await stripBoard(channel, previous);
-  if (!holds) { await stripBoard(channel, id); return true; }
+  if (!holds) { await stripBoard(channel, id); return { ok: true }; }
 
   // Refresh our scoreboard so it includes anyone who finished a moment before us,
   // then give it up again if an even newer result took over meanwhile.
@@ -97,7 +97,7 @@ export async function postFinish({ date, guild, channel, user, guesses, won, car
     method: "PATCH", body: JSON.stringify({ embeds: [await boardEmbed(date, guild)], components: [PLAY_BUTTONS], allowed_mentions: { parse: [] } }),
   });
   if ((await holderId())?.message_id !== id) await stripBoard(channel, id);
-  return true;
+  return { ok: true };
 }
 
 // Remove the scoreboard and buttons from an older message, keeping its result line.

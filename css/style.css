@@ -258,6 +258,11 @@ html.no-scroll { overflow: hidden; }
 .discord-add .btn { display: inline-flex; gap: 8px; align-items: center; padding: 11px 18px; text-decoration: none; }
 .discord-add .btn svg { color: #8C9EFF; }
 .in-discord .discord-add, .in-discord .discord-link { display: none; }
+/* Inside Discord: post your result card to the channel, and what happened when it tried. */
+.discord-post { display: grid; gap: 8px; justify-items: center; }
+.discord-post-msg { margin: 0; font-size: .88rem; color: var(--muted); }
+.discord-post-msg.ok { color: var(--hit); }
+.discord-post-msg.err { color: var(--miss); }
 .link { background: none; border: 0; padding: 6px 2px; color: var(--muted); font: 700 .85rem var(--body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .share-ico { width: 1.1em; height: 1.1em; vertical-align: -0.18em; color: var(--ink); }
 

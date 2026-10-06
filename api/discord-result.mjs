@@ -50,15 +50,25 @@ export async function POST(request) {
     body: JSON.stringify({ puzzle_date: b.date, guild_id: location.guild_id, user_id: user.id, guesses, won: b.won }),
   });
   if (!saved.ok) return json({ error: "couldn't save" }, 500);
-  if (!(await saved.json()).length) return json({ ok: true, posted: false }); // already counted today
+  if (!(await saved.json()).length) return json({ ok: true, posted: false, reason: "already posted" });
 
-  // The card is drawn from Discord's copy of the name and avatar; neither is stored.
-  // Loaded here, not at the top, so a problem with the image libraries can't break the rest.
-  const { renderCard, avatarUrl } = await import("./_card.mjs");
-  const card = await renderCard({
-    number: puzzleNumber(b.date), name: user.global_name || user.username, avatar: avatarUrl(user),
-    won: b.won, guesses, trail,
-  });
-  const posted = await postFinish({ date: b.date, guild: location.guild_id, channel: location.channel_id, user: user.id, guesses, won: b.won, card });
-  return json({ ok: true, posted });
+  // If anything below fails, forget the result again, so "Post to channel" can retry.
+  const unsave = () => db(`discord_results?puzzle_date=eq.${b.date}&guild_id=eq.${encodeURIComponent(location.guild_id)}&user_id=eq.${encodeURIComponent(user.id)}`, { method: "DELETE" });
+  try {
+    // The card is drawn from Discord's copy of the name and avatar; neither is stored.
+    // Loaded here, not at the top, so a problem with the image libraries can't break the rest.
+    const { renderCard, avatarUrl } = await import("./_card.mjs");
+    const card = await renderCard({
+      number: puzzleNumber(b.date), name: user.global_name || user.username, avatar: avatarUrl(user),
+      won: b.won, guesses, trail,
+    });
+    const result = await postFinish({ date: b.date, guild: location.guild_id, channel: location.channel_id, user: user.id, guesses, won: b.won, card });
+    if (result.ok) return json({ ok: true, posted: true });
+    await unsave();
+    return json({ ok: false, posted: false, reason: result.status === 403 || result.status === 401 ? "no permission" : `discord said ${result.status}` });
+  } catch (e) {
+    console.warn("Posting the result failed", e);
+    await unsave();
+    return json({ ok: false, posted: false, reason: `server error: ${String(e?.message || e).slice(0, 120)}` }, 500);
+  }
 }
