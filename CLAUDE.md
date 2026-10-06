@@ -36,7 +36,7 @@ Zoom Out is a daily photo guessing game, live at https://zoomout.dev. Every day 
 1. Use the full-size original if there is one (e.g. in `Downloads`), not a chat-pasted copy. Save it into `new-photos/` named by its answers (`zeppelin+blimp+airship+dirigible.jpg`).
 2. `npm run photos`: turns it upright, shrinks to max 2048 px, strips all metadata including GPS location. `schedule` and `check` refuse photos that still have GPS.
 3. Write a `near-words.json` entry (key = main answer, 10–16 close guesses) by hand BEFORE scheduling, so the yellow guesses land in `puzzles.json`.
-4. `node scripts/schedule.mjs`, then set `focusX`/`focusY` on an interesting, non-giveaway detail (render the 6 zoom steps to check). Never the centre by default; avoid logos, text and faces (they give it away by 12×) and empty background (sky, table) that shows nothing until 2.5×. Aim for "strange at 16×, fair guess around 5×"., then `npm run check`.
+4. `node scripts/schedule.mjs`, then set `focusX`/`focusY` on an interesting, non-giveaway detail (render the 6 zoom steps to check). The 16× view must show part of the answer object itself (players said starting on the fridge shelf instead of the can was unfair), never only its surroundings. Never the centre by default; avoid logos, text and faces (they give it away by 12×) and empty background (sky, table) that shows nothing until 2.5×. Aim for "strange at 16×, fair guess around 5×"., then `npm run check`.
 5. Commit and push so Vercel deploys.
 
 ## Working with Nawar
