@@ -71,9 +71,14 @@
     "answers": [
       "energy drink",
       "energy drink can",
-      "can"
+      "energy drinks"
     ],
     "near": [
+      "can",
+      "cans",
+      "tin",
+      "soda can",
+      "drink can",
       "soda",
       "soft drink",
       "cola",
@@ -84,8 +89,8 @@
       "red bull",
       "monster"
     ],
-    "focusX": 0.4,
-    "focusY": 0.205
+    "focusX": 0.505,
+    "focusY": 0.345
   },
   {
     "date": "2026-10-07",

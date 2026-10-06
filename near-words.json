@@ -7,7 +7,7 @@
   "mugs": ["cup", "teacup", "coffee cup", "glass", "jug", "kettle", "bowl", "teapot", "vase"],
   "lamb": ["sheep", "ram", "goat", "wool", "alpaca", "llama", "mutton", "lamb chop", "meat", "steak"],
   "goat": ["ram", "alpaca", "llama", "deer", "fawn", "calf", "pony", "dog", "puppy", "wool", "animal"],
-  "energy drink": ["can", "soda", "soft drink", "cola", "coke", "beer", "juice", "sports drink", "red bull", "monster"],
+  "energy drink": ["can", "cans", "tin", "soda can", "drink can", "soda", "soft drink", "cola", "coke", "beer", "juice", "sports drink", "red bull", "monster"],
   "cookie": ["biscuit", "cracker", "brownie", "muffin", "chocolate", "oreo", "donut", "doughnut", "waffle", "cake"],
   "coffee": ["espresso", "latte", "cappuccino", "americano", "coffee beans", "tea", "hot chocolate", "cocoa", "cup", "mug"],
   "coffee cake": ["cake", "muffin", "crumble", "pie", "pastry", "banana bread", "pound cake", "bread", "scone", "cookie"],
