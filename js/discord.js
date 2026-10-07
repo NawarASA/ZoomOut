@@ -42,6 +42,14 @@ function startSignIn(prompt) {
 }
 startSignIn("none");
 
+// Discord doesn't let Activities open links themselves; ask Discord to open them in the browser.
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[target="_blank"]');
+  if (!a) return;
+  e.preventDefault();
+  ready.then(() => discord.commands.openExternalLink({ url: a.href })).catch(err => console.warn("Couldn't open link", err));
+});
+
 // "Post to channel" on the end screen, plus what happened.
 const box = document.getElementById("discord-post"), btn = document.getElementById("discord-post-btn"), note = document.getElementById("discord-post-msg");
 let todays = null;
@@ -72,7 +80,7 @@ async function post(detail, { retrySignIn = false } = {}) {
     if (out.board === false) { say("Results are posted in servers only, not in DMs.", "err"); btn.disabled = false; return; }
     if (out.reason === "no permission") say("ZoomOut's bot can't post in this channel. Ask an admin to give it View Channel, Send Messages, Embed Links and Attach Files here.", "err");
     else if (/member (403|404)|channel (403|404)/.test(out.detail || "")) say("ZoomOut's bot can't see this server or channel. Ask an admin to add the bot with the install link and allow it to View Channel here.", "err");
-    else say(`${REASONS[out.error] || `Couldn't post your result (${out.error || out.reason || res.status}).`}${out.detail ? ` [${out.detail}]` : ""} [v4: ${raw.slice(0, 160)}]`, "err");
+    else say(`${REASONS[out.error] || `Couldn't post your result (${out.error || out.reason || res.status}).`}${out.detail ? ` [${out.detail}]` : ""} [v5: ${raw.slice(0, 160)}]`, "err");
   } catch (e) { say(`Couldn't reach ZoomOut: ${e.message}`, "err"); }
   btn.disabled = false;
 }

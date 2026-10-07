@@ -258,6 +258,9 @@ html.no-scroll { overflow: hidden; }
 .discord-add .btn { display: inline-flex; gap: 8px; align-items: center; padding: 11px 18px; text-decoration: none; }
 .discord-add .btn svg { color: #8C9EFF; }
 .in-discord .discord-add, .in-discord .discord-link { display: none; }
+/* Ko-fi tip link at the bottom of the end screen. */
+.support { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: .88rem; color: var(--muted); }
+.support a { color: var(--ink); font-weight: 700; }
 /* Inside Discord: post your result card to the channel, and what happened when it tried. */
 .discord-post { display: grid; gap: 8px; justify-items: center; }
 .discord-post-msg { margin: 0; font-size: .88rem; color: var(--muted); }
