@@ -18,12 +18,13 @@ const SNOWFLAKE = /^\d{17,20}$/;
 // bot instead that the player is a member of that server and the channel belongs to it.
 async function whereIsPlayer(b, userId) {
   const inst = await discordApi(`/applications/${APP_ID}/activity-instances/${encodeURIComponent(b.instance_id)}`);
+  let why = `session lookup ${inst.status}`;
   if (inst.ok) {
     const { location, users = [] } = await inst.json();
     if (!users.includes(userId)) return { error: "not in this activity" };
-    return { guild_id: location?.guild_id ?? null, channel_id: location?.channel_id };
+    if (location?.guild_id) return { guild_id: location.guild_id, channel_id: location.channel_id };
+    why = `session has no server (kind ${location?.kind ?? "?"})`; // seen in practice: check the server ourselves
   }
-  const why = `session lookup ${inst.status}`;
   if (!b.guild_id) return { guild_id: null };                     // DM: nothing to post anyway
   if (!SNOWFLAKE.test(b.guild_id) || !SNOWFLAKE.test(b.channel_id ?? "")) return { error: "unknown activity", detail: why };
   const [member, channel] = await Promise.all([

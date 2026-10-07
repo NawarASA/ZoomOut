@@ -67,6 +67,7 @@ async function post(detail, { retrySignIn = false } = {}) {
     const out = await res.json().catch(() => ({}));
     if (out.posted) { say("Posted to the channel.", "ok"); btn.hidden = true; return; }
     if (out.reason === "already posted") { say("Your result for today is already in the channel.", "ok"); btn.hidden = true; return; }
+    if (out.board === false) { say("Results are posted in servers only, not in DMs.", "err"); btn.disabled = false; return; }
     if (out.reason === "no permission") say("ZoomOut's bot can't post in this channel. Ask an admin to give it View Channel, Send Messages, Embed Links and Attach Files here.", "err");
     else if (/member (403|404)|channel (403|404)/.test(out.detail || "")) say("ZoomOut's bot can't see this server or channel. Ask an admin to add the bot with the install link and allow it to View Channel here.", "err");
     else say(`${REASONS[out.error] || `Couldn't post your result (${out.error || out.reason || res.status}).`}${out.detail ? ` [${out.detail}]` : ""}`, "err");
