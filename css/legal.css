@@ -12,3 +12,7 @@
 .legal strong { color: var(--ink); }
 .legal a { color: var(--c2); }
 .legal footer { margin-top: 40px; padding-top: 16px; }
+/* A button inside the text, e.g. "Send us a photo" on the About page (button style from style.css). */
+.legal .cta { margin: 16px 0 6px; }
+.legal .cta .support-btn { color: var(--ink); }
+.legal .hint { font-size: .85rem; color: var(--muted); }
