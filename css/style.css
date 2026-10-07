@@ -329,8 +329,8 @@ html.no-scroll { overflow: hidden; }
 .bonus-kicker { margin: 0; font: 700 .68rem var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
 .bonus-card .bonus-kicker { margin: 0 0 4px; }
 
-.bonus-sheet { max-width: 520px; }
-.bonus-sheet h2 { margin: 6px 36px 6px 0; font: 900 1.7rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+
+
 .bonus-how { margin: 0 0 14px; color: var(--muted); font-size: .9rem; }
 
 .viewfinder { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid var(--line); }
@@ -378,7 +378,8 @@ html.no-scroll { overflow: hidden; }
 .pixels i { width: 14px; height: 14px; border-radius: 2px; border: 1px solid var(--line); background: rgba(255,255,255,.04); }
 .pixels i.dead { background: var(--miss); border-color: var(--miss); box-shadow: 0 0 10px rgba(255,107,91,.6); }
 
-.bonus-form { margin-top: 12px; grid-template-columns: 1fr auto; animation: none; }
+form.guess.bonus-form { margin-top: 12px; grid-template-columns: 1fr auto; animation: none; }
+form.guess.bonus-form input { grid-column: auto; }
 .bonus-msg { min-height: 1.4em; margin: 10px 0 0; font-size: .9rem; color: var(--muted); }
 .bonus-msg.good { color: var(--hit); } .bonus-msg.bad { color: var(--miss); }
 .bonus-tried { margin: 4px 0 0; font-size: .82rem; color: var(--muted); }
@@ -390,3 +391,18 @@ html.no-scroll { overflow: hidden; }
   .vf-rec::before, .viewfinder.glitch, .frames li.hit { animation: none; }
   .viewfinder.shutter::after, .viewfinder.glitch::after { animation-duration: .2s; }
 }
+.bonus-card .btn { text-decoration: none; }
+
+/* 4K page (4k.html) */
+.fourk { max-width: 560px; }
+.fourk .back { font: 700 0.8rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+.fourk .back:hover { color: var(--ink); }
+.fourk-head { margin-top: 4px; }
+.fourk-mark { font: 900 clamp(4rem, 22vw, 6rem)/.9 var(--display); letter-spacing: .04em; margin: 2px 0 0;
+  background: linear-gradient(90deg, var(--c1), var(--c2) 45%, var(--c3) 75%, var(--c4)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fourk-sub { margin: 0; font: 500 .74rem var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.fourk-q { margin: 0 0 6px; font: 900 1.8rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.fourk-locked { display: grid; gap: 14px; justify-items: center; text-align: center; padding: 24px 18px; border-radius: 18px; background: var(--bg-2); border: 1px solid var(--line); }
+.fourk-locked p { margin: 0; color: var(--muted); }
+.fourk-locked .btn, .fourk-backlink { text-decoration: none; }
+.fourk-backlink { justify-self: center; color: var(--muted); font-size: .9rem; }

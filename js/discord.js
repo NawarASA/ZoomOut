@@ -87,5 +87,5 @@ async function post(detail, { retrySignIn = false } = {}) {
 
 // game.js: today's puzzle was just finished (post automatically) / its end screen is showing.
 addEventListener("zoomout:daily-finished", ({ detail }) => { todays = detail; post(detail); });
-addEventListener("zoomout:daily-end-shown", ({ detail }) => { todays = detail; box.hidden = false; });
-btn.addEventListener("click", () => todays && post(todays, { retrySignIn: true }));
+addEventListener("zoomout:daily-end-shown", ({ detail }) => { todays = detail; if (box) box.hidden = false; });
+btn?.addEventListener("click", () => todays && post(todays, { retrySignIn: true }));

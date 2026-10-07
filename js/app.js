@@ -10,7 +10,7 @@ export const inDiscord = location.hostname.endsWith(".discordsays.com") || new U
 if (inDiscord) {
   document.documentElement.classList.add("in-discord");
   // Bump ?v= whenever discord.js changes: Discord keeps Activity files cached.
-  try { await import("./discord.js?v=5"); } catch (e) { console.warn("Discord SDK didn't start", e); }
+  try { await import("./discord.js?v=6"); } catch (e) { console.warn("Discord SDK didn't start", e); }
 }
 
 /* ---------------- offline support ---------------- */
@@ -67,7 +67,7 @@ function openSheet() {
 }
 function closeSheet() {
   const box = $("ios-install");
-  if (box.hidden) return;
+  if (!box || box.hidden) return;
   box.classList.add("closing");
   setTimeout(() => { box.hidden = true; box.classList.remove("closing"); document.documentElement.classList.remove("no-scroll"); $("install-btn")?.focus({ preventScroll: true }); }, reduced ? 0 : 210);
 }

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>4K · Zoom Out bonus round</title>
+  <meta name="description" content="The Zoom Out bonus round: name the five most popular answers and sharpen today's photo to 4K.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#090C11">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="wrap fourk">
+  <a class="back" href="/" data-keep-query>&larr; Back to today's photo</a>
+  <header class="fourk-head">
+    <p class="bonus-kicker" id="no">4K</p>
+    <h1 class="fourk-mark">4K</h1>
+    <p class="fourk-sub">The Zoom Out bonus round</p>
+  </header>
+
+  <section class="fourk-locked" id="locked" hidden>
+    <p>Finish today's photo first. 4K unlocks as soon as you're done, win or lose.</p>
+    <a class="btn" href="/" data-keep-query>Play today's photo</a>
+  </section>
+
+  <section id="game" hidden>
+    <h2 class="fourk-q" id="q"></h2>
+    <p class="bonus-how">Name the 5 most popular answers. Each one sharpens today's photo. Find them all for 4,000 points: <b>4K</b>.</p>
+
+    <div class="viewfinder" id="viewfinder">
+      <canvas id="photo" role="img" aria-label="Today's photo, sharper with every answer"></canvas>
+      <span class="vf-corner tl"></span><span class="vf-corner tr"></span><span class="vf-corner bl"></span><span class="vf-corner br"></span>
+      <span class="vf-rec">REC</span>
+      <span class="vf-res" id="res">144p</span>
+      <span class="vf-score" id="score">0 / 4,000</span>
+      <span class="vf-lost">Signal lost</span>
+    </div>
+
+    <ol class="frames" id="frames"></ol>
+    <div class="pixels-row"><span>Dead pixels</span><span class="pixels" id="pixels"></span></div>
+
+    <form class="guess bonus-form" id="form" autocomplete="off">
+      <input id="input" type="text" placeholder="Your answer" aria-label="Your answer" maxlength="40" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+      <button class="btn" type="submit">Shoot</button>
+    </form>
+    <p class="bonus-msg" id="msg" aria-live="polite"></p>
+    <p class="bonus-tried" id="tried"></p>
+
+    <div class="bonus-end" id="end" hidden>
+      <h3 id="end-title"></h3>
+      <p id="end-text"></p>
+      <div class="stats" id="stats"></div>
+      <button class="btn" type="button" id="copy">Copy result</button>
+      <a class="fourk-backlink" href="/" data-keep-query>Back to Zoom Out</a>
+    </div>
+  </section>
+
+  <footer>A new board every day with the new photo</footer>
+</main>
+<script type="module" src="js/app.js"></script>
+<script type="module" src="js/4k.js"></script>
+</body>
+</html>
