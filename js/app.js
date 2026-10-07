@@ -9,7 +9,7 @@ const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 export const inDiscord = location.hostname.endsWith(".discordsays.com") || new URLSearchParams(location.search).has("frame_id");
 if (inDiscord) {
   document.documentElement.classList.add("in-discord");
-  try { await import("./discord.js"); } catch (e) { console.warn("Discord SDK didn't start", e); }
+  try { await import("./discord.js?v=4"); } // bump ?v= when discord.js changes: Discord caches Activity files catch (e) { console.warn("Discord SDK didn't start", e); }
 }
 
 /* ---------------- offline support ---------------- */
