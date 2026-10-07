@@ -258,9 +258,32 @@ html.no-scroll { overflow: hidden; }
 .discord-add .btn { display: inline-flex; gap: 8px; align-items: center; padding: 11px 18px; text-decoration: none; }
 .discord-add .btn svg { color: #8C9EFF; }
 .in-discord .discord-add, .in-discord .discord-link { display: none; }
-/* Ko-fi tip link at the bottom of the end screen. */
-.support { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: .88rem; color: var(--muted); }
-.support a { color: var(--ink); font-weight: 700; }
+/* Ko-fi tip button at the bottom of the end screen: the lens coating as a slowly turning border,
+   a soft glow and a light sweep every few seconds. Still for reduced-motion users (see below). */
+@property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.support { display: grid; gap: 10px; justify-items: center; padding-top: 16px; border-top: 1px solid var(--line); }
+.support p { margin: 0; font-size: .88rem; color: var(--muted); }
+.support-btn {
+  position: relative; overflow: hidden; display: inline-flex; gap: 9px; align-items: center;
+  padding: 13px 24px; border-radius: 999px; border: 2px solid transparent;
+  font: 700 .95rem var(--body); color: var(--ink); text-decoration: none;
+  background: linear-gradient(var(--bg-2), var(--bg-2)) padding-box,
+              conic-gradient(from var(--spin), var(--c1), var(--c2), var(--c3), var(--c4), var(--c1)) border-box;
+  box-shadow: 0 0 22px rgba(123,97,255,.35), 0 0 44px rgba(46,211,169,.12);
+  animation: support-spin 6s linear infinite;
+  transition: transform .2s, box-shadow .25s;
+}
+.support-btn svg { color: var(--c3); }
+.support-btn::after { /* light sweep */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.18) 50%, transparent 65%);
+  transform: translateX(-120%); animation: support-sweep 4.5s ease-in-out 1.2s infinite;
+}
+.support-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 30px rgba(123,97,255,.55), 0 0 60px rgba(255,92,141,.25); }
+.support-btn:active { transform: translateY(1px) scale(.99); }
+@keyframes support-spin { to { --spin: 360deg; } }
+@keyframes support-sweep { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) { .support-btn, .support-btn::after { animation: none; } .support-btn:hover { transform: none; } }
 /* Inside Discord: post your result card to the channel, and what happened when it tried. */
 .discord-post { display: grid; gap: 8px; justify-items: center; }
 .discord-post-msg { margin: 0; font-size: .88rem; color: var(--muted); }
