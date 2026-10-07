@@ -187,6 +187,11 @@ footer a { color: var(--muted); }
 /* how to play */
 .help-btn { justify-self: center; margin-top: 4px; display: inline-flex; align-items: center; gap: 8px; font: 700 0.82rem var(--body); color: var(--ink); background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 8px; cursor: pointer; transition: border-color .25s; animation: fadeUp .8s .8s both; }
 .help-btn:hover { border-color: var(--muted); }
+/* "How to play" and "Send a photo" side by side under the logo. */
+.head-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.photo-btn { text-decoration: none; border-color: transparent; background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--coating) border-box; }
+.photo-btn:hover { border-color: transparent; box-shadow: 0 0 16px rgba(123,97,255,.35); }
+.in-discord .photo-btn { display: none; } /* email links can't open from inside a Discord Activity */
 .help-btn span { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--bg); font: 800 0.75rem var(--body); }
 .help { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; }
 .help-backdrop { position: absolute; inset: 0; background: rgba(4,6,9,.78); animation: fade .25s ease both; }
