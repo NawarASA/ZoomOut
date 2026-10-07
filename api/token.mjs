@@ -12,7 +12,14 @@ export async function POST(request) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ client_id: APP_ID, client_secret: process.env.DISCORD_CLIENT_SECRET ?? "", grant_type: "authorization_code", code }),
   });
-  if (!res.ok) { console.warn(`Token exchange failed: ${res.status} ${await res.text()}`); return json({ error: "exchange failed" }, 502); }
+  if (!res.ok) {
+    // Pass on Discord's reason (e.g. "invalid_client" = wrong DISCORD_CLIENT_SECRET); it never contains the secret.
+    const body = await res.text();
+    console.warn(`Token exchange failed: ${res.status} ${body}`);
+    let reason = body.slice(0, 120);
+    try { const e = JSON.parse(body); reason = [e.error, e.error_description].filter(Boolean).join(": ") || reason; } catch {}
+    return json({ error: "exchange failed", status: res.status, reason }, 502);
+  }
   const { access_token } = await res.json();
   return json({ access_token });
 }

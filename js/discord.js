@@ -26,7 +26,10 @@ function startSignIn(prompt) {
       client_id: CONFIG.discordClientId, response_type: "code", state: "", prompt, scope: ["identify"],
     });
     const res = await fetch("/api/token", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
-    if (!res.ok) throw new Error(`sign-in failed on the server (${res.status})`);
+    if (!res.ok) {
+      const { reason } = await res.json().catch(() => ({}));
+      throw new Error(`sign-in failed on the server (${res.status}${reason ? `, Discord said: ${reason}` : ""})`);
+    }
     const { access_token } = await res.json();
     await discord.commands.authenticate({ access_token });
     return { token: access_token };
