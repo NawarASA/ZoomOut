@@ -1,6 +1,6 @@
 // 4K, the bonus round (4k.html): PeakPoll's survey game, camera edition.
 // Name the 5 most popular answers to a survey question. Each one raises the resolution of
-// today's photo, from blocky 144p to a crisp 4K at 4,000 points. 3 wrong answers are dead
+// a picture of the topic, from blocky 144p to a crisp 4K at 4,000 points. 3 wrong answers are dead
 // pixels, and the third one loses the signal. Unlocks once today's photo is finished.
 import { CONFIG } from "./config.js";
 import { isoDate, esc } from "./core.js";
@@ -151,10 +151,7 @@ if (!finishedDaily(today)) {
   $("game").hidden = false;
   $("q").textContent = board.question;
   render(); setResolution(score() / MAX, true);
-  try {
-    const puzzles = await (await fetch(CONFIG.puzzlesFile, { cache: "no-store" })).json();
-    const img = new Image();
-    img.onload = () => { view.img = img; draw(); };
-    img.src = puzzles.find(p => p.date === today)?.image || "";
-  } catch {}
+  const img = new Image(); // the board's own illustration, sharpening as you score
+  img.onload = () => { view.img = img; draw(); };
+  img.src = board.image;
 }

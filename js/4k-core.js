@@ -20,7 +20,8 @@ function points(answers) {
 export function boardFor(date) {
   const number = daysBetween(CONFIG.launchDate, date) + 1;
   const [question, answers] = QUESTIONS[(number - 1) % QUESTIONS.length];
-  return { date, number, question, answers, pts: points(answers) };
+  const n = (number - 1) % QUESTIONS.length + 1; // the board's illustration (scripts/make-4k-images.mjs)
+  return { date, number, question, answers, pts: points(answers), image: `images/4k/${String(n).padStart(2, "0")}.svg` };
 }
 
 const blank = () => ({ boards: {}, stats: { played: 0, perfect: 0, best: 0 } });
