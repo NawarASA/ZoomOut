@@ -62,13 +62,14 @@ async function post(detail, { retrySignIn = false } = {}) {
   try {
     const res = await fetch("/api/discord-result", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ access_token: auth.token, instance_id: discord.instanceId, ...detail }),
+      body: JSON.stringify({ access_token: auth.token, instance_id: discord.instanceId, guild_id: discord.guildId, channel_id: discord.channelId, ...detail }),
     });
     const out = await res.json().catch(() => ({}));
     if (out.posted) { say("Posted to the channel.", "ok"); btn.hidden = true; return; }
     if (out.reason === "already posted") { say("Your result for today is already in the channel.", "ok"); btn.hidden = true; return; }
     if (out.reason === "no permission") say("ZoomOut's bot can't post in this channel. Ask an admin to give it View Channel, Send Messages, Embed Links and Attach Files here.", "err");
-    else say(REASONS[out.error] || `Couldn't post your result (${out.error || out.reason || res.status}).`, "err");
+    else if (/member (403|404)|channel (403|404)/.test(out.detail || "")) say("ZoomOut's bot can't see this server or channel. Ask an admin to add the bot with the install link and allow it to View Channel here.", "err");
+    else say(`${REASONS[out.error] || `Couldn't post your result (${out.error || out.reason || res.status}).`}${out.detail ? ` [${out.detail}]` : ""}`, "err");
   } catch (e) { say(`Couldn't reach ZoomOut: ${e.message}`, "err"); }
   btn.disabled = false;
 }

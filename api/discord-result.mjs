@@ -11,6 +11,30 @@ const RESULTS = ["hit", "near", "miss", "skip"];
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
+const SNOWFLAKE = /^\d{17,20}$/;
+
+// Which server and channel the player is really in. First choice: Discord's record of the
+// Activity session (it lists the players). If Discord doesn't know the session, check with the
+// bot instead that the player is a member of that server and the channel belongs to it.
+async function whereIsPlayer(b, userId) {
+  const inst = await discordApi(`/applications/${APP_ID}/activity-instances/${encodeURIComponent(b.instance_id)}`);
+  if (inst.ok) {
+    const { location, users = [] } = await inst.json();
+    if (!users.includes(userId)) return { error: "not in this activity" };
+    return { guild_id: location?.guild_id ?? null, channel_id: location?.channel_id };
+  }
+  const why = `session lookup ${inst.status}`;
+  if (!b.guild_id) return { guild_id: null };                     // DM: nothing to post anyway
+  if (!SNOWFLAKE.test(b.guild_id) || !SNOWFLAKE.test(b.channel_id ?? "")) return { error: "unknown activity", detail: why };
+  const [member, channel] = await Promise.all([
+    discordApi(`/guilds/${b.guild_id}/members/${userId}`),
+    discordApi(`/channels/${b.channel_id}`),
+  ]);
+  if (!member.ok || !channel.ok) return { error: "unknown activity", detail: `${why}, member ${member.status}, channel ${channel.status}` };
+  if ((await channel.json()).guild_id !== b.guild_id) return { error: "unknown activity", detail: `${why}, channel is in another server` };
+  return { guild_id: b.guild_id, channel_id: b.channel_id };
+}
+
 // Open https://zoomout.dev/api/discord-result to check that result cards can be drawn here.
 export async function GET() {
   try {
@@ -37,11 +61,9 @@ export async function POST(request) {
   if (!me.ok) return json({ error: "not signed in" }, 401);
   const user = await me.json();
 
-  const inst = await discordApi(`/applications/${APP_ID}/activity-instances/${encodeURIComponent(b.instance_id)}`);
-  if (!inst.ok) return json({ error: "unknown activity" }, 403);
-  const { location, users = [] } = await inst.json();
-  if (!users.includes(user.id)) return json({ error: "not in this activity" }, 403);
-  if (!location?.guild_id) return json({ ok: true, board: false }); // DMs: nowhere to post a scoreboard
+  const location = await whereIsPlayer(b, user.id);
+  if (location.error) return json(location, 403);
+  if (!location.guild_id) return json({ ok: true, board: false }); // DMs: nowhere to post a scoreboard
 
   // First result of the day counts; replays don't overwrite it or post again.
   const saved = await db("discord_results?on_conflict=puzzle_date,guild_id,user_id", {
