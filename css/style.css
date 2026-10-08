@@ -357,21 +357,32 @@ html.no-scroll { overflow: hidden; }
 @keyframes shutter { from { opacity: .9; } to { opacity: 0; } }
 @keyframes glitch { 25% { transform: translate(-4px, 1px); } 50% { transform: translate(3px, -2px); } 75% { transform: translate(-2px, 2px); } }
 
-/* the five answers as film frames, with sprocket holes */
-.frames { list-style: none; margin: 12px 0 0; padding: 10px 8px; display: grid; gap: 6px; border-radius: 10px; background: #050608;
-  background-image: radial-gradient(circle, #1c2230 2.5px, transparent 3px), radial-gradient(circle, #1c2230 2.5px, transparent 3px);
-  background-size: 14px 8px; background-position: 0 1px, 0 calc(100% - 1px); background-repeat: repeat-x; }
-.frames li { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px;
-  background: #11151e; border: 1px solid #1f2633; font-size: .95rem; }
-.frames .no { font: 700 .75rem var(--mono); color: var(--muted); }
-.frames .ans { color: #4a5366; font-weight: 700; }
-.frames .pts { font: 700 .82rem var(--mono); color: var(--muted); }
-.frames li.found { background: linear-gradient(90deg, rgba(61,220,151,.16), rgba(61,220,151,.04)); border-color: rgba(61,220,151,.45); }
-.frames li.found .ans { color: var(--ink); }
-.frames li.found .pts { color: var(--hit); }
-.frames li.missed .ans { color: var(--muted); }
-.frames li.hit { animation: develop .7s ease-out both; }
-@keyframes develop { from { filter: brightness(3) saturate(0); } to { filter: none; } }
+/* the five answers as Polaroids: ejected, tilted, developing from dark to colour */
+.polaroids { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 12px; }
+.pol { width: calc((100% - 24px) / 3); max-width: 150px; padding: 7px 7px 0; border-radius: 4px; background: #F4F1EA; color: #1B1F2A;
+  box-shadow: 0 10px 24px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.6) inset; transform: rotate(var(--tilt)); transition: transform .25s; }
+.pol-photo { position: relative; aspect-ratio: 1; border-radius: 2px; overflow: hidden;
+  background: radial-gradient(circle at 30% 35%, var(--c1) 0 18%, transparent 19%), radial-gradient(circle at 70% 60%, var(--c2) 0 24%, transparent 25%),
+              radial-gradient(circle at 55% 25%, rgba(255,255,255,.35) 0 8%, transparent 9%), linear-gradient(135deg, #10142A, #2A1A44); }
+.pol-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.18), transparent 40%); }
+.pol-no { position: absolute; top: 5px; left: 7px; z-index: 1; font: 700 .7rem var(--mono); color: rgba(255,255,255,.85); }
+.pol-cap { display: grid; gap: 1px; padding: 7px 2px 9px; text-align: center; min-height: 54px; align-content: center; }
+.pol-cap b { font: 800 .95rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .03em; overflow-wrap: anywhere; }
+.pol-cap span { font: 700 .72rem var(--mono); color: #6A5F8C; }
+.pol.empty { background: transparent; box-shadow: none; border: 2px dashed #2A3242; transform: none; }
+.pol.empty .pol-photo { background: rgba(255,255,255,.03); }
+.pol.empty .pol-photo::after { display: none; }
+.pol.empty .pol-no { color: var(--muted); }
+.pol.empty .pol-cap b { color: #3A4356; }
+.pol.missed { filter: grayscale(1) brightness(.75); transform: rotate(var(--tilt)) scale(.94); }
+.pol.hit { animation: eject .9s cubic-bezier(.2,.9,.25,1.15) both; }
+.pol.hit .pol-photo { animation: develop 2.2s ease-out .35s both; }
+.pol.hit .pol-cap b, .pol.hit .pol-cap span { animation: ink 1s ease .9s both; }
+.polaroids.cheer .pol { animation: cheer .7s cubic-bezier(.3,1.6,.5,1) calc(var(--i) * 90ms) both; }
+@keyframes eject { 0% { transform: translateY(-70px) rotate(0) scale(.85); opacity: 0; } 55% { transform: translateY(8px) rotate(calc(var(--tilt) * 1.6)); opacity: 1; } 100% { transform: rotate(var(--tilt)); } }
+@keyframes develop { from { filter: brightness(.1) saturate(0) contrast(.8); } 60% { filter: brightness(.8) saturate(.6); } to { filter: none; } }
+@keyframes ink { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes cheer { 0%, 100% { transform: rotate(var(--tilt)); } 40% { transform: translateY(-14px) rotate(calc(var(--tilt) * -1)) scale(1.06); } }
 
 .pixels-row { display: flex; justify-content: space-between; align-items: center; margin: 12px 2px 0; font: 700 .68rem var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .pixels { display: flex; gap: 6px; }
@@ -384,11 +395,11 @@ form.guess.bonus-form input { grid-column: auto; }
 .bonus-msg.good { color: var(--hit); } .bonus-msg.bad { color: var(--miss); }
 .bonus-tried { margin: 4px 0 0; font-size: .82rem; color: var(--muted); }
 .bonus-end { display: grid; gap: 12px; margin-top: 8px; text-align: center; }
-.bonus-end h3 { margin: 0; font: 900 2rem var(--display); text-transform: uppercase; letter-spacing: .03em; }
+.bonus-end h3 { margin: 0; font: 900 2rem var(--display); letter-spacing: .03em; }
 .bonus-end p { margin: 0; color: var(--muted); }
 .bonus-end .btn { justify-self: center; }
 @media (prefers-reduced-motion: reduce) {
-  .vf-rec::before, .viewfinder.glitch, .frames li.hit { animation: none; }
+  .vf-rec::before, .viewfinder.glitch, .pol.hit, .pol.hit .pol-photo, .pol.hit .pol-cap b, .pol.hit .pol-cap span, .polaroids.cheer .pol { animation: none; }
   .viewfinder.shutter::after, .viewfinder.glitch::after { animation-duration: .2s; }
 }
 .bonus-card .btn { text-decoration: none; }

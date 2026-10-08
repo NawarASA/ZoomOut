@@ -1,6 +1,6 @@
 // 4K, the bonus round (4k.html): PeakPoll's survey game, camera edition.
-// Name the 5 most popular answers to a survey question. Each one raises the resolution of
-// a picture of the topic, from blocky 144p to a crisp 4K at 4,000 points. 3 wrong answers are dead
+// Name the 5 most popular answers to a survey question. Each one raises the resolution of the
+// viewfinder's bokeh lights, from blocky 144p to a crisp 4K at 4,000 points, and prints a Polaroid. 3 wrong answers are dead
 // pixels, and the third one loses the signal. Unlocks once today's photo is finished.
 import { CONFIG } from "./config.js";
 import { isoDate, esc } from "./core.js";
@@ -34,46 +34,88 @@ const board = boardFor(today);
 const state = store.get().boards[today] || { found: [], strikes: 0, tried: [], done: false };
 const score = () => scoreOf(board, state);
 
-/* ---------- the viewfinder: today's photo at the current resolution ---------- */
-const view = { img: null, shown: 0, raf: 0 };
-function draw() {
-  const cv = $("photo"); if (!view.img) return;
-  const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
-  const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+/* ---------- the viewfinder: today's bokeh lights, at the current resolution ---------- */
+// Out-of-focus light circles (like the site background), a different set every day. They drift
+// and pulse; at low scores they're drawn as big pixels, and every answer resolves them further.
+const PALETTE = ["#7B61FF", "#2ED3A9", "#F4C54B", "#FF5C8D", "#4FB6E8", "#FF8C6E"];
+const rnd = seed => { let s = seed % 233280 || 1; return () => (s = (s * 9301 + 49297) % 233280) / 233280; };
+const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a.toFixed(3)})`; };
+const lights = (() => {
+  const r = rnd(board.number * 7919 + 13), shift = Math.floor(r() * PALETTE.length);
+  return Array.from({ length: 24 }, (_, i) => ({
+    x: r(), y: r(), r: .05 + r() * .15, c: PALETTE[(shift + (i % 3 ? i : 0)) % PALETTE.length],
+    a: .3 + r() * .5, drift: .015 + r() * .03, ph: r() * Math.PI * 2, speed: .6 + r() * .8,
+  }));
+})();
+const view = { shown: 0, target: 0, from: 0, t0: 0, bloom: -1e9, raf: 0 };
+const scene = document.createElement("canvas"), small = document.createElement("canvas");
+
+function paint(t, w, h) { // the bokeh at full detail, into `scene`
+  if (scene.width !== w || scene.height !== h) { scene.width = w; scene.height = h; }
+  const ctx = scene.getContext("2d"), big = Math.max(w, h);
+  const bg = ctx.createLinearGradient(0, 0, w, h); bg.addColorStop(0, "#0A0E22"); bg.addColorStop(1, "#1E1236");
+  ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+  const bloom = 1 + .35 * Math.exp(-(t - view.bloom) / 500) * (t > view.bloom ? 1 : 0); // swell when 4K is reached
+  ctx.globalCompositeOperation = "lighter";
+  for (const l of lights) {
+    const s = t * .00025 * l.speed;
+    const x = (l.x + Math.sin(s + l.ph) * l.drift) * w, y = (l.y + Math.cos(s * .8 + l.ph) * l.drift) * h;
+    const pulse = .8 + .2 * Math.sin(t * .0011 * l.speed + l.ph), rad = l.r * big * bloom, a = l.a * pulse;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+    g.addColorStop(0, rgba(l.c, a * .5)); g.addColorStop(.78, rgba(l.c, a * .38)); g.addColorStop(.9, rgba(l.c, a * .85)); g.addColorStop(1, rgba(l.c, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill();
+  }
+  if (view.shown >= 1) { // star glints on a perfect shot
+    ctx.fillStyle = "#fff";
+    lights.forEach((l, i) => {
+      if (i % 4) return;
+      const k = Math.max(0, Math.sin(t * .002 + l.ph * 3)), x = l.x * w, y = l.y * h, len = big * .025 * k;
+      ctx.globalAlpha = k; ctx.fillRect(x - len, y - .8, len * 2, 1.6); ctx.fillRect(x - .8, y - len, 1.6, len * 2);
+    });
+    ctx.globalAlpha = 1;
+  }
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function draw(t = performance.now()) {
+  const cv = $("photo"), rect = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  const w = Math.round(rect.width * dpr), h = Math.round(rect.height * dpr);
   if (!w || !h) return;
   if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
-  const ctx = cv.getContext("2d"), img = view.img;
-  const s = Math.max(w / img.naturalWidth, h / img.naturalHeight), sw = w / s, sh = h / s; // cover-crop
-  const sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
-  if (view.shown >= 1) { ctx.imageSmoothingEnabled = true; ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h); return; }
+  if (view.t0) { // easing between resolutions
+    const k = Math.min(1, (t - view.t0) / 900);
+    view.shown = view.from + (view.target - view.from) * (1 - Math.pow(1 - k, 3));
+    if (k >= 1) view.t0 = 0;
+  }
+  const ctx = cv.getContext("2d");
+  if (view.shown >= .999) { paint(t, w, h); ctx.drawImage(scene, 0, 0); return; }
+  paint(t, Math.round(w / 2), Math.round(h / 2)); // half detail is plenty under the pixels
   const cols = Math.max(6, Math.round(10 * Math.pow(2, view.shown * 5))), rows = Math.max(4, Math.round(cols * h / w));
-  const small = draw.small || (draw.small = document.createElement("canvas"));
   small.width = cols; small.height = rows;
-  const sc = small.getContext("2d"); sc.imageSmoothingEnabled = true; sc.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
+  const sc = small.getContext("2d"); sc.imageSmoothingEnabled = true; sc.drawImage(scene, 0, 0, cols, rows);
   ctx.imageSmoothingEnabled = false; ctx.drawImage(small, 0, 0, w, h);
 }
+function loop(t) { draw(t); view.raf = requestAnimationFrame(loop); }
 function setResolution(f, instant) {
-  cancelAnimationFrame(view.raf);
-  if (instant || reduced) { view.shown = f; draw(); return; }
-  const from = view.shown, t0 = performance.now(), dur = 900;
-  const step = now => {
-    const k = Math.min(1, (now - t0) / dur);
-    view.shown = from + (f - from) * (1 - Math.pow(1 - k, 3)); draw();
-    if (k < 1) view.raf = requestAnimationFrame(step);
-  };
-  view.raf = requestAnimationFrame(step);
+  if (f >= 1 && view.target < 1 && !instant) view.bloom = performance.now();
+  if (instant || reduced) { view.shown = view.target = f; view.t0 = 0; }
+  else { view.from = view.shown; view.target = f; view.t0 = performance.now(); }
+  if (reduced) draw();
 }
-addEventListener("resize", draw);
+addEventListener("resize", () => draw());
 
 /* ---------- drawing the board ---------- */
 function render(hit = null) {
   const sc = score(), f = sc / MAX, { answers, pts } = board;
   $("res").textContent = tier(f);
   $("score").textContent = `${fmt(sc)} / ${fmt(MAX)}`;
+  // The answers as Polaroids: empty frames, printed and developing when found, grey when missed.
   $("frames").innerHTML = answers.map((a, i) => {
     const found = state.found.includes(i), show = found || state.done;
-    return `<li class="${found ? "found" : show ? "missed" : ""}${i === hit ? " hit" : ""}">
-      <span class="no">${i + 1}</span><span class="ans">${show ? esc(a[0]) : "?"}</span><span class="pts">${show ? fmt(pts[i]) : ""}</span></li>`;
+    const c1 = PALETTE[(i * 2 + board.number) % PALETTE.length], c2 = PALETTE[(i * 2 + board.number + 3) % PALETTE.length];
+    return `<li class="pol ${found ? "found" : show ? "missed" : "empty"}${i === hit ? " hit" : ""}" style="--c1:${c1};--c2:${c2};--tilt:${[-4, 3, -2, 4, -3][i]}deg;--i:${i}">
+      <div class="pol-photo"><span class="pol-no">${i + 1}</span></div>
+      <div class="pol-cap"><b>${show ? esc(a[0]) : "?"}</b><span>${show ? fmt(pts[i]) : ""}</span></div></li>`;
   }).join("");
   $("pixels").innerHTML = [0, 1, 2].map(i => `<i class="${i < state.strikes ? "dead" : ""}"></i>`).join("");
   $("tried").textContent = state.tried.length ? `Not in the survey: ${state.tried.join(", ")}` : "";
@@ -86,7 +128,8 @@ function render(hit = null) {
 
 function renderEnd(sc) {
   const perfect = state.found.length === 5, res = tier(sc / MAX);
-  $("end-title").textContent = perfect ? "Shot in 4K" : state.strikes >= 3 ? `Signal lost at ${res}` : `Shot in ${res}`;
+  // Written in capitals here (not CSS) so resolutions keep their lowercase "p": 480p, not 480P.
+  $("end-title").textContent = perfect ? "SHOT IN 4K" : state.strikes >= 3 ? `SIGNAL LOST AT ${res}` : `SHOT IN ${res}`;
   $("end-text").textContent = perfect ? "All five answers. Every pixel in place." : `You found ${state.found.length} of 5 answers for ${fmt(sc)} points.`;
   const s = store.get().stats;
   $("stats").innerHTML = [[s.played, "Played"], [s.perfect, "In 4K"], [fmt(s.best), "Best"]]
@@ -126,6 +169,8 @@ $("form").addEventListener("submit", e => {
     if (perfect) state.done = true;
     say(perfect ? "Every answer. That's 4K." : `${answers[i][0]}: +${fmt(pts[i])} points. Resolution up.`, "good");
     save(perfect); render(i); setResolution(score() / MAX); flash("shutter");
+    navigator.vibrate?.(perfect ? [20, 60, 20, 60, 40] : 18);
+    if (perfect) setTimeout(() => $("frames").classList.add("cheer"), 700); // the whole set celebrates
   } else {
     if (state.tried.some(t => norm(t) === norm(g))) return say("You already tried that one.");
     state.strikes++; state.tried.push(g);
@@ -151,7 +196,5 @@ if (!finishedDaily(today)) {
   $("game").hidden = false;
   $("q").textContent = board.question;
   render(); setResolution(score() / MAX, true);
-  const img = new Image(); // the board's own illustration, sharpening as you score
-  img.onload = () => { view.img = img; draw(); };
-  img.src = board.image;
+  if (reduced) draw(); else view.raf = requestAnimationFrame(loop); // the lights drift and pulse
 }
