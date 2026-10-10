@@ -357,32 +357,22 @@ html.no-scroll { overflow: hidden; }
 @keyframes shutter { from { opacity: .9; } to { opacity: 0; } }
 @keyframes glitch { 25% { transform: translate(-4px, 1px); } 50% { transform: translate(3px, -2px); } 75% { transform: translate(-2px, 2px); } }
 
-/* the five answers as Polaroids: ejected, tilted, developing from dark to colour */
-.polaroids { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 12px; }
-.pol { width: calc((100% - 24px) / 3); max-width: 150px; padding: 7px 7px 0; border-radius: 4px; background: #F4F1EA; color: #1B1F2A;
-  box-shadow: 0 10px 24px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.6) inset; transform: rotate(var(--tilt)); transition: transform .25s; }
-.pol-photo { position: relative; aspect-ratio: 1; border-radius: 2px; overflow: hidden;
-  background: radial-gradient(circle at 30% 35%, var(--c1) 0 18%, transparent 19%), radial-gradient(circle at 70% 60%, var(--c2) 0 24%, transparent 25%),
-              radial-gradient(circle at 55% 25%, rgba(255,255,255,.35) 0 8%, transparent 9%), linear-gradient(135deg, #10142A, #2A1A44); }
-.pol-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.18), transparent 40%); }
-.pol-no { position: absolute; top: 5px; left: 7px; z-index: 1; font: 700 .7rem var(--mono); color: rgba(255,255,255,.85); }
-.pol-cap { display: grid; gap: 1px; padding: 7px 2px 9px; text-align: center; min-height: 54px; align-content: center; }
-.pol-cap b { font: 800 .95rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .03em; overflow-wrap: anywhere; }
-.pol-cap span { font: 700 .72rem var(--mono); color: #6A5F8C; }
-.pol.empty { background: transparent; box-shadow: none; border: 2px dashed #2A3242; transform: none; }
-.pol.empty .pol-photo { background: rgba(255,255,255,.03); }
-.pol.empty .pol-photo::after { display: none; }
-.pol.empty .pol-no { color: var(--muted); }
-.pol.empty .pol-cap b { color: #3A4356; }
-.pol.missed { filter: grayscale(1) brightness(.75); transform: rotate(var(--tilt)) scale(.94); }
-.pol.hit { animation: eject .9s cubic-bezier(.2,.9,.25,1.15) both; }
-.pol.hit .pol-photo { animation: develop 2.2s ease-out .35s both; }
-.pol.hit .pol-cap b, .pol.hit .pol-cap span { animation: ink 1s ease .9s both; }
-.polaroids.cheer .pol { animation: cheer .7s cubic-bezier(.3,1.6,.5,1) calc(var(--i) * 90ms) both; }
-@keyframes eject { 0% { transform: translateY(-70px) rotate(0) scale(.85); opacity: 0; } 55% { transform: translateY(8px) rotate(calc(var(--tilt) * 1.6)); opacity: 1; } 100% { transform: rotate(var(--tilt)); } }
-@keyframes develop { from { filter: brightness(.1) saturate(0) contrast(.8); } 60% { filter: brightness(.8) saturate(.6); } to { filter: none; } }
-@keyframes ink { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-@keyframes cheer { 0%, 100% { transform: rotate(var(--tilt)); } 40% { transform: translateY(-14px) rotate(calc(var(--tilt) * -1)) scale(1.06); } }
+/* the five answers as rows: "?" until found, then a light flash and green */
+.answers { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
+.answers li { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 12px;
+  background: rgba(255,255,255,.03); border: 1px solid var(--line); font-size: .98rem; }
+.answers .no { font: 700 .75rem var(--mono); color: var(--muted); }
+.answers .ans { color: #3A4356; font-weight: 700; }
+.answers .pts { font: 700 .85rem var(--mono); color: var(--muted); }
+.answers li.found { background: linear-gradient(90deg, rgba(61,220,151,.16), rgba(61,220,151,.04)); border-color: rgba(61,220,151,.45); }
+.answers li.found .ans { color: var(--ink); }
+.answers li.found .pts { color: var(--hit); }
+.answers li.missed { opacity: .55; }
+.answers li.missed .ans { color: var(--muted); }
+.answers li.hit { animation: reveal .7s cubic-bezier(.2,.9,.25,1.15) both; }
+.answers.cheer li { animation: cheer .6s cubic-bezier(.3,1.6,.5,1) calc(var(--i) * 80ms) both; }
+@keyframes reveal { 0% { transform: translateX(-12px) scale(.97); opacity: .3; filter: brightness(2.2); } 60% { transform: translateX(3px); opacity: 1; } 100% { transform: none; filter: none; } }
+@keyframes cheer { 0%, 100% { transform: none; } 40% { transform: translateX(8px) scale(1.02); border-color: var(--hit); } }
 
 .pixels-row { display: flex; justify-content: space-between; align-items: center; margin: 12px 2px 0; font: 700 .68rem var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .pixels { display: flex; gap: 6px; }
@@ -399,7 +389,7 @@ form.guess.bonus-form input { grid-column: auto; }
 .bonus-end p { margin: 0; color: var(--muted); }
 .bonus-end .btn { justify-self: center; }
 @media (prefers-reduced-motion: reduce) {
-  .vf-rec::before, .viewfinder.glitch, .pol.hit, .pol.hit .pol-photo, .pol.hit .pol-cap b, .pol.hit .pol-cap span, .polaroids.cheer .pol { animation: none; }
+  .vf-rec::before, .viewfinder.glitch, .answers li.hit, .answers.cheer li { animation: none; }
   .viewfinder.shutter::after, .viewfinder.glitch::after { animation-duration: .2s; }
 }
 .bonus-card .btn { text-decoration: none; }

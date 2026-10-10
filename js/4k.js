@@ -1,6 +1,6 @@
 // 4K, the bonus round (4k.html): PeakPoll's survey game, camera edition.
 // Name the 5 most popular answers to a survey question. Each one raises the resolution of the
-// viewfinder's bokeh lights, from blocky 144p to a crisp 4K at 4,000 points, and prints a Polaroid. 3 wrong answers are dead
+// viewfinder's bokeh lights, from blocky 144p to a crisp 4K at 4,000 points. 3 wrong answers are dead
 // pixels, and the third one loses the signal. Unlocks once today's photo is finished.
 import { CONFIG } from "./config.js";
 import { isoDate, esc } from "./core.js";
@@ -109,13 +109,11 @@ function render(hit = null) {
   const sc = score(), f = sc / MAX, { answers, pts } = board;
   $("res").textContent = tier(f);
   $("score").textContent = `${fmt(sc)} / ${fmt(MAX)}`;
-  // The answers as Polaroids: empty frames, printed and developing when found, grey when missed.
+  // The answers as rows: "?" until found, green with a flash when found, dimmed when missed.
   $("frames").innerHTML = answers.map((a, i) => {
     const found = state.found.includes(i), show = found || state.done;
-    const c1 = PALETTE[(i * 2 + board.number) % PALETTE.length], c2 = PALETTE[(i * 2 + board.number + 3) % PALETTE.length];
-    return `<li class="pol ${found ? "found" : show ? "missed" : "empty"}${i === hit ? " hit" : ""}" style="--c1:${c1};--c2:${c2};--tilt:${[-4, 3, -2, 4, -3][i]}deg;--i:${i}">
-      <div class="pol-photo"><span class="pol-no">${i + 1}</span></div>
-      <div class="pol-cap"><b>${show ? esc(a[0]) : "?"}</b><span>${show ? fmt(pts[i]) : ""}</span></div></li>`;
+    return `<li class="${found ? "found" : show ? "missed" : "empty"}${i === hit ? " hit" : ""}" style="--i:${i}">
+      <span class="no">${i + 1}</span><span class="ans">${show ? esc(a[0]) : "?"}</span><span class="pts">${show ? fmt(pts[i]) : ""}</span></li>`;
   }).join("");
   $("pixels").innerHTML = [0, 1, 2].map(i => `<i class="${i < state.strikes ? "dead" : ""}"></i>`).join("");
   $("tried").textContent = state.tried.length ? `Not in the survey: ${state.tried.join(", ")}` : "";
@@ -170,7 +168,7 @@ $("form").addEventListener("submit", e => {
     say(perfect ? "Every answer. That's 4K." : `${answers[i][0]}: +${fmt(pts[i])} points. Resolution up.`, "good");
     save(perfect); render(i); setResolution(score() / MAX); flash("shutter");
     navigator.vibrate?.(perfect ? [20, 60, 20, 60, 40] : 18);
-    if (perfect) setTimeout(() => $("frames").classList.add("cheer"), 700); // the whole set celebrates
+    if (perfect) setTimeout(() => $("frames").classList.add("cheer"), 700); // the rows ripple
   } else {
     if (state.tried.some(t => norm(t) === norm(g))) return say("You already tried that one.");
     state.strikes++; state.tried.push(g);
