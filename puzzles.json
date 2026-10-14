@@ -301,5 +301,215 @@
     ],
     "focusX": 0.65,
     "focusY": 0.64
+  },
+  {
+    "date": "2026-10-16",
+    "image": "photos/2026-10-16.jpg",
+    "answers": [
+      "hot air balloon",
+      "balloon"
+    ],
+    "near": [
+      "zeppelin",
+      "blimp",
+      "airship",
+      "weather balloon",
+      "party balloon",
+      "parachute",
+      "kite",
+      "lantern",
+      "sky lantern",
+      "paper lantern",
+      "umbrella",
+      "tent",
+      "fire",
+      "flame"
+    ],
+    "focusX": 0.42,
+    "focusY": 0.62,
+    "credit": "Frank Schulenburg, CC BY-SA 3.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-17",
+    "image": "photos/2026-10-17.jpg",
+    "answers": [
+      "pine cone",
+      "pinecone",
+      "cone"
+    ],
+    "near": [
+      "pineapple",
+      "artichoke",
+      "acorn",
+      "nut",
+      "walnut",
+      "hazelnut",
+      "seed",
+      "conifer",
+      "fir",
+      "pine",
+      "tree",
+      "bark",
+      "wood",
+      "armadillo",
+      "pangolin"
+    ],
+    "focusX": 0.5,
+    "focusY": 0.55,
+    "credit": "Petar Milošević, CC BY-SA 4.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-18",
+    "image": "photos/2026-10-18.jpg",
+    "answers": [
+      "typewriter"
+    ],
+    "near": [
+      "keyboard",
+      "computer",
+      "laptop",
+      "piano",
+      "calculator",
+      "cash register",
+      "printer",
+      "keys",
+      "sewing machine",
+      "telephone",
+      "radio"
+    ],
+    "focusX": 0.55,
+    "focusY": 0.27,
+    "credit": "Suyash Dwivedi, CC BY-SA 4.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-19",
+    "image": "photos/2026-10-19.jpg",
+    "answers": [
+      "pocket watch",
+      "watch"
+    ],
+    "near": [
+      "clock",
+      "wristwatch",
+      "alarm clock",
+      "stopwatch",
+      "compass",
+      "gear",
+      "gears",
+      "cog",
+      "engine",
+      "machine",
+      "locket",
+      "coin",
+      "timer",
+      "sundial"
+    ],
+    "focusX": 0.53,
+    "focusY": 0.47,
+    "credit": "Franz van Duns, CC BY-SA 4.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-20",
+    "image": "photos/2026-10-20.jpg",
+    "answers": [
+      "strawberry"
+    ],
+    "near": [
+      "raspberry",
+      "blackberry",
+      "berry",
+      "berries",
+      "cherry",
+      "tomato",
+      "chili",
+      "pepper",
+      "apple",
+      "fruit",
+      "seeds",
+      "dragon fruit",
+      "lychee"
+    ],
+    "focusX": 0.67,
+    "focusY": 0.5,
+    "credit": "Ivar Leidus, CC BY-SA 4.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-21",
+    "image": "photos/2026-10-21.jpg",
+    "answers": [
+      "peacock",
+      "peafowl"
+    ],
+    "near": [
+      "peahen",
+      "turkey",
+      "pheasant",
+      "parrot",
+      "bird",
+      "feather",
+      "feathers",
+      "ostrich",
+      "rooster",
+      "chicken",
+      "hummingbird",
+      "butterfly",
+      "owl"
+    ],
+    "focusX": 0.2,
+    "focusY": 0.75,
+    "credit": "Jebulon, CC BY-SA 3.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-22",
+    "image": "photos/2026-10-22.jpg",
+    "answers": [
+      "chameleon",
+      "panther chameleon"
+    ],
+    "near": [
+      "lizard",
+      "iguana",
+      "gecko",
+      "reptile",
+      "snake",
+      "frog",
+      "dragon",
+      "crocodile",
+      "alligator",
+      "dinosaur",
+      "turtle",
+      "scales"
+    ],
+    "focusX": 0.4,
+    "focusY": 0.38,
+    "credit": "Charles J. Sharp, CC BY-SA 4.0, via Wikimedia Commons"
+  },
+  {
+    "date": "2026-10-23",
+    "image": "photos/2026-10-23.jpg",
+    "answers": [
+      "pineapple",
+      "ananas"
+    ],
+    "near": [
+      "pine cone",
+      "pinecone",
+      "artichoke",
+      "mango",
+      "papaya",
+      "coconut",
+      "durian",
+      "jackfruit",
+      "fruit",
+      "palm tree",
+      "palm",
+      "agave",
+      "aloe",
+      "cactus",
+      "plant"
+    ],
+    "focusX": 0.6,
+    "focusY": 0.58,
+    "credit": "Markus Leupold-Löwenthal, CC BY-SA 3.0, via Wikimedia Commons"
   }
 ]

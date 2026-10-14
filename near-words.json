@@ -14,5 +14,13 @@
   "cat": ["kitten", "kitty", "dog", "puppy", "fox", "tiger", "lion", "rabbit", "fur", "animal"],
   "cake": ["cupcake", "cheesecake", "muffin", "pie", "tart", "pastry", "dessert", "brownie", "bread", "birthday cake"],
   "bread bun": ["bun", "bread", "roll", "bread roll", "bagel", "croissant", "loaf", "brioche", "baguette", "burger", "toast", "pretzel", "dough"],
-  "zeppelin": ["hot air balloon", "balloon", "weather balloon", "plane", "airplane", "aeroplane", "aircraft", "jet", "glider", "helicopter", "rocket", "spaceship", "ufo", "submarine", "torpedo", "missile"]
+  "zeppelin": ["hot air balloon", "balloon", "weather balloon", "plane", "airplane", "aeroplane", "aircraft", "jet", "glider", "helicopter", "rocket", "spaceship", "ufo", "submarine", "torpedo", "missile"],
+  "pineapple": ["pine cone", "pinecone", "artichoke", "mango", "papaya", "coconut", "durian", "jackfruit", "fruit", "palm tree", "palm", "agave", "aloe", "cactus", "plant"],
+  "strawberry": ["raspberry", "blackberry", "berry", "berries", "cherry", "tomato", "chili", "pepper", "apple", "fruit", "seeds", "dragon fruit", "lychee"],
+  "chameleon": ["lizard", "iguana", "gecko", "reptile", "snake", "frog", "dragon", "crocodile", "alligator", "dinosaur", "turtle", "scales"],
+  "typewriter": ["keyboard", "computer", "laptop", "piano", "calculator", "cash register", "printer", "keys", "sewing machine", "telephone", "radio"],
+  "pine cone": ["pineapple", "artichoke", "acorn", "nut", "walnut", "hazelnut", "seed", "conifer", "fir", "pine", "tree", "bark", "wood", "armadillo", "pangolin"],
+  "peacock": ["peahen", "turkey", "pheasant", "parrot", "bird", "feather", "feathers", "ostrich", "rooster", "chicken", "hummingbird", "butterfly", "owl"],
+  "hot air balloon": ["zeppelin", "blimp", "airship", "weather balloon", "party balloon", "parachute", "kite", "lantern", "sky lantern", "paper lantern", "umbrella", "tent", "fire", "flame"],
+  "pocket watch": ["clock", "wristwatch", "alarm clock", "stopwatch", "compass", "gear", "gears", "cog", "engine", "machine", "locket", "coin", "timer", "sundial"]
 }
